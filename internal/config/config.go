@@ -1129,11 +1129,11 @@ const LanguagePolicy = `Reply in the same language the user is using in their mo
 	`whenever they switch. Let this also guide the language you think in. Always keep code, ` +
 	`identifiers, file paths, shell commands, and technical terms in their original form — never translate them.`
 
-// Default returns the built-in default configuration (DeepSeek + MiMo presets).
+// Default returns the built-in default configuration.
 func Default() *Config {
 	return &Config{
 		ConfigVersion:    3,
-		DefaultModel:     "deepseek-flash",
+		DefaultModel:     "quantara-openai",
 		CredentialsStore: CredentialsStoreAuto,
 		UI:               UIConfig{Theme: "auto"},
 		Notifications: NotificationsConfig{
@@ -1177,11 +1177,19 @@ func Default() *Config {
 			Feishu:           FeishuBotConfig{Domain: "feishu", AppSecretEnv: "FEISHU_BOT_APP_SECRET", Mode: "webhook", WebhookPort: 8080, RequireMention: true},
 			Weixin:           WeixinBotConfig{AccountID: "default", TokenEnv: "WEIXIN_BOT_TOKEN", APIBase: "https://ilinkai.weixin.qq.com"},
 		},
+		Desktop: DesktopConfig{
+			ProviderAccess: []string{"openai-compatible"},
+		},
 		Providers: []ProviderEntry{
-			{Name: "deepseek-flash", Kind: "openai", BaseURL: "https://api.deepseek.com", Model: "deepseek-v4-flash", APIKeyEnv: "DEEPSEEK_API_KEY", BalanceURL: "https://api.deepseek.com/user/balance", ContextWindow: 1_000_000, Price: deepSeekV4FlashPrice()},
-			{Name: "deepseek-pro", Kind: "openai", BaseURL: "https://api.deepseek.com", Model: "deepseek-v4-pro", APIKeyEnv: "DEEPSEEK_API_KEY", BalanceURL: "https://api.deepseek.com/user/balance", ContextWindow: 1_000_000, Price: deepSeekV4ProPrice()},
-			{Name: "mimo-pro", Kind: "openai", BaseURL: "https://token-plan-cn.xiaomimimo.com/v1", Model: "mimo-v2.5-pro", APIKeyEnv: "MIMO_API_KEY", ContextWindow: 1_000_000, Price: mimoV25ProPrice(), NoProxy: true},
-			{Name: "mimo-flash", Kind: "openai", BaseURL: "https://token-plan-cn.xiaomimimo.com/v1", Model: "mimo-v2.5", APIKeyEnv: "MIMO_API_KEY", ContextWindow: 1_000_000, Price: mimoV25Price(), NoProxy: true},
+			{
+				Name:          "quantara-openai",
+				Kind:          "openai",
+				BaseURL:       "https://api.openai.com/v1",
+				Models:        []string{"gpt-5", "gpt-5-mini"},
+				Default:       "gpt-5-mini",
+				APIKeyEnv:     "OPENAI_API_KEY",
+				ContextWindow: 1_000_000,
+			},
 		},
 	}
 }
@@ -1902,14 +1910,8 @@ func ensureProviderModels(p *ProviderEntry, required []string, fallbackDefault s
 
 func legacyOfficialProviderModel(name string) string {
 	switch strings.TrimSpace(name) {
-	case "deepseek-flash":
-		return "deepseek-v4-flash"
-	case "deepseek-pro":
-		return "deepseek-v4-pro"
-	case "mimo-api", "mimo-pro":
-		return "mimo-v2.5-pro"
-	case "mimo-flash":
-		return "mimo-v2.5"
+	case "quantara-openai", "openai-compatible":
+		return "gpt-5-mini"
 	default:
 		return ""
 	}
@@ -1921,11 +1923,7 @@ func normalizeDesktopOfficialProviderAccess(c *Config) {
 	}
 	seen := desktopProviderAccessMap(nil)
 	next := make([]string, 0, len(c.Desktop.ProviderAccess))
-	includeMimoFlash := false
 	for _, name := range c.Desktop.ProviderAccess {
-		if strings.TrimSpace(name) == "mimo-flash" {
-			includeMimoFlash = true
-		}
 		name = canonicalDesktopOfficialProviderName(name)
 		if name == "" || seen[name] {
 			continue
@@ -1934,14 +1932,8 @@ func normalizeDesktopOfficialProviderAccess(c *Config) {
 		next = append(next, name)
 	}
 	c.Desktop.ProviderAccess = next
-	if seen["deepseek"] {
-		ensureDeepSeekOfficialProvider(c)
-	}
-	if seen["mimo-api"] {
-		ensureMimoAPIProvider(c)
-	}
-	if seen["mimo-token-plan"] {
-		ensureMimoTokenPlanProvider(c, includeMimoFlash)
+	if seen["openai-compatible"] {
+		ensureOpenAICompatibleProvider(c)
 	}
 	retargetDesktopOfficialRefs(c, seen)
 }
@@ -1994,12 +1986,8 @@ func NormalizeLegacyDesktopProviderAccess(c *Config) {
 
 func canonicalDesktopOfficialProviderName(name string) string {
 	switch strings.TrimSpace(name) {
-	case "deepseek-flash", "deepseek-pro":
-		return "deepseek"
-	case "mimo", "xiaomi-mimo", "xiaomi_mimo":
-		return "mimo-api"
-	case "mimo-pro", "mimo-flash":
-		return "mimo-token-plan"
+	case "quantara-openai":
+		return "openai-compatible"
 	default:
 		return strings.TrimSpace(name)
 	}
@@ -2022,93 +2010,19 @@ func desktopProviderAccessMap(names []string) map[string]bool {
 	return out
 }
 
-func ensureDeepSeekOfficialProvider(c *Config) {
-	if _, ok := c.Provider("deepseek"); ok {
+func ensureOpenAICompatibleProvider(c *Config) {
+	if _, ok := c.Provider("openai-compatible"); ok {
 		return
 	}
 	entry := ProviderEntry{
-		Name:          "deepseek",
+		Name:          "openai-compatible",
 		Kind:          "openai",
-		BaseURL:       "https://api.deepseek.com",
-		Models:        []string{"deepseek-v4-flash", "deepseek-v4-pro"},
-		Default:       "deepseek-v4-flash",
-		APIKeyEnv:     "DEEPSEEK_API_KEY",
-		BalanceURL:    "https://api.deepseek.com/user/balance",
+		BaseURL:       "https://api.openai.com/v1",
+		Models:        []string{"gpt-5", "gpt-5-mini"},
+		Default:       "gpt-5-mini",
+		APIKeyEnv:     "OPENAI_API_KEY",
 		ContextWindow: 1_000_000,
-		Prices:        deepSeekV4PricesForConfig(c),
 	}
-	if old, ok := c.Provider("deepseek-flash"); ok {
-		entry = officialProviderFromLegacy(entry, old)
-		entry.Prices = deepSeekV4PricesForConfig(c)
-		entry.Models = mergeModelLists([]string{"deepseek-v4-flash", "deepseek-v4-pro"}, old.ModelList())
-		entry.Default = firstKnownModel(entry.Default, entry.Models, "deepseek-v4-flash")
-	}
-	c.Providers = append(c.Providers, entry)
-}
-
-func ensureMimoAPIProvider(c *Config) {
-	models := []string{"mimo-v2.5-pro", "mimo-v2.5", "mimo-v2-omni"}
-	visionModels := []string{"mimo-v2.5", "mimo-v2-omni"}
-	if p, ok := c.Provider("mimo-api"); ok {
-		if isOfficialMimoAPIProvider(p) {
-			mergeCuratedModelsIntoProvider(p, models, "mimo-v2.5-pro")
-			mergeVisionModelsIntoProvider(p, visionModels)
-			backfillMimoDomesticPrices(p)
-		}
-		return
-	}
-	c.Providers = append(c.Providers, ProviderEntry{
-		Name:          "mimo-api",
-		Kind:          "openai",
-		BaseURL:       "https://api.xiaomimimo.com/v1",
-		Models:        models,
-		VisionModels:  visionModels,
-		Default:       "mimo-v2.5-pro",
-		APIKeyEnv:     "MIMO_API_KEY",
-		ContextWindow: 1_048_576,
-		Prices:        mimoDomesticPrices(models),
-		NoProxy:       true,
-	})
-}
-
-func ensureMimoTokenPlanProvider(c *Config, includeMimoFlash bool) {
-	models := []string{"mimo-v2.5-pro", "mimo-v2.5"}
-	visionModels := []string{"mimo-v2.5"}
-	if p, ok := c.Provider("mimo-token-plan"); ok {
-		if isOfficialMimoTokenPlanProvider(p) {
-			mergeCuratedModelsIntoProvider(p, models, "mimo-v2.5-pro")
-			mergeVisionModelsIntoProvider(p, visionModels)
-			clearMixedMimoTokenPlanPrice(p)
-			backfillMimoDomesticPrices(p)
-		}
-		return
-	}
-	entry := ProviderEntry{
-		Name:          "mimo-token-plan",
-		Kind:          "openai",
-		BaseURL:       "https://token-plan-cn.xiaomimimo.com/v1",
-		Models:        models,
-		VisionModels:  visionModels,
-		Default:       "mimo-v2.5-pro",
-		APIKeyEnv:     "MIMO_API_KEY",
-		ContextWindow: 1_048_576,
-		Prices:        mimoDomesticPrices(models),
-		NoProxy:       true,
-	}
-	if old, ok := c.Provider("mimo-pro"); ok {
-		entry = officialProviderFromLegacy(entry, old)
-		entry.Models = mergeModelLists(models, old.ModelList())
-		entry.Default = firstKnownModel(entry.Default, entry.Models, "mimo-v2.5-pro")
-	}
-	if old, ok := c.Provider("mimo-flash"); includeMimoFlash && ok {
-		if !providerHasAnyModel(entry) {
-			entry = officialProviderFromLegacy(entry, old)
-		}
-		entry.Models = mergeModelLists(entry.Models, old.ModelList())
-		entry.Default = firstKnownModel(entry.Default, entry.Models, entry.Default)
-	}
-	clearMixedMimoTokenPlanPrice(&entry)
-	backfillMimoDomesticPrices(&entry)
 	c.Providers = append(c.Providers, entry)
 }
 

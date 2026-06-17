@@ -930,55 +930,31 @@ func desktopAutoPlanMode(mode string) string {
 
 func officialProviderTemplate(kind, pricingLanguage string) ([]config.ProviderEntry, string, error) {
 	switch strings.ToLower(strings.TrimSpace(kind)) {
-	case "deepseek", "deepseek-official":
+	case "openai-compatible", "openai", "openai-compatible-official":
 		return []config.ProviderEntry{{
-			Name:          "deepseek",
+			Name:          "openai-compatible",
 			Kind:          "openai",
-			BaseURL:       "https://api.deepseek.com",
-			Models:        []string{"deepseek-v4-flash", "deepseek-v4-pro"},
-			Default:       "deepseek-v4-flash",
-			APIKeyEnv:     "DEEPSEEK_API_KEY",
-			BalanceURL:    "https://api.deepseek.com/user/balance",
+			BaseURL:       "https://api.openai.com/v1",
+			Models:        []string{"gpt-5", "gpt-5-mini"},
+			Default:       "gpt-5-mini",
+			APIKeyEnv:     "OPENAI_API_KEY",
 			ContextWindow: 1_000_000,
-			Prices:        config.DeepSeekV4PricesForLanguage(pricingLanguage),
-		}}, "DEEPSEEK_API_KEY", nil
-	case "mimo-api", "xiaomi-mimo", "xiaomi_mimo":
-		models := []string{"mimo-v2.5-pro", "mimo-v2.5", "mimo-v2-omni"}
-		return []config.ProviderEntry{{
-			Name:          "mimo-api",
-			Kind:          "openai",
-			BaseURL:       "https://api.xiaomimimo.com/v1",
-			Models:        models,
-			VisionModels:  []string{"mimo-v2.5", "mimo-v2-omni"},
-			Default:       "mimo-v2.5-pro",
-			APIKeyEnv:     "MIMO_API_KEY",
-			ContextWindow: 1_048_576,
 			Prices: map[string]*provider.Pricing{
-				"mimo-v2.5-pro": &provider.Pricing{CacheHit: 0.025, Input: 3, Output: 6, Currency: "¥"},
-				"mimo-v2.5":     &provider.Pricing{CacheHit: 0.02, Input: 1, Output: 2, Currency: "¥"},
-				"mimo-v2-omni":  &provider.Pricing{CacheHit: 0.02, Input: 1, Output: 2, Currency: "¥"},
+				"gpt-5":      {Input: 2.0, Output: 8.0, Currency: pricingCurrency(pricingLanguage)},
+				"gpt-5-mini": {Input: 0.4, Output: 1.6, Currency: pricingCurrency(pricingLanguage)},
 			},
-			NoProxy: true,
-		}}, "MIMO_API_KEY", nil
-	case "mimo-token-plan", "xiaomi-mimo-token-plan", "xiaomi_mimo_token_plan":
-		models := []string{"mimo-v2.5-pro", "mimo-v2.5"}
-		return []config.ProviderEntry{{
-			Name:          "mimo-token-plan",
-			Kind:          "openai",
-			BaseURL:       "https://token-plan-cn.xiaomimimo.com/v1",
-			Models:        models,
-			VisionModels:  []string{"mimo-v2.5"},
-			Default:       "mimo-v2.5-pro",
-			APIKeyEnv:     "MIMO_API_KEY",
-			ContextWindow: 1_048_576,
-			Prices: map[string]*provider.Pricing{
-				"mimo-v2.5-pro": &provider.Pricing{CacheHit: 0.025, Input: 3, Output: 6, Currency: "¥"},
-				"mimo-v2.5":     &provider.Pricing{CacheHit: 0.02, Input: 1, Output: 2, Currency: "¥"},
-			},
-			NoProxy: true,
-		}}, "MIMO_API_KEY", nil
+		}}, "OPENAI_API_KEY", nil
 	default:
 		return nil, "", fmt.Errorf("unknown official provider template %q", kind)
+	}
+}
+
+func pricingCurrency(language string) string {
+	switch strings.ToLower(strings.TrimSpace(language)) {
+	case "zh", "zh-cn", "zh-hans":
+		return "¥"
+	default:
+		return "$"
 	}
 }
 

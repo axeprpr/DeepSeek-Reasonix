@@ -277,7 +277,7 @@ export interface AppBindings {
   ApplyUpdate(): Promise<void>;
   OpenDownloadPage(): Promise<void>;
   NeedsOnboarding(): Promise<boolean>;
-  ConnectKey(apiKey: string): Promise<string>;
+  ConnectKey(payload: { baseUrl: string; apiKey: string; model?: string }): Promise<string>;
   // Crash overlay "Send report" (desktop/crash_app.go): scrubs user paths, attaches
   // version/os/arch, POSTs to the collection endpoint. Only ever sent on user click.
   ReportCrash(kind: string, detail: string): Promise<void>;
@@ -757,19 +757,16 @@ function makeMockApp(): AppBindings {
   }
   // Mutable settings so the Settings panel's edits are observable in browser dev.
   const settings: SettingsView = {
-    defaultModel: "deepseek",
+    defaultModel: "openai-compatible",
     plannerModel: "",
     subagentModel: "",
     subagentEffort: "",
     autoPlan: "off",
     providers: [
-      { name: "deepseek", builtIn: true, added: false, kind: "openai", baseUrl: "https://api.deepseek.com", modelsUrl: "", models: ["deepseek-v4-flash"], visionModels: [], visionModelsConfigured: false, default: "deepseek-v4-flash", apiKeyEnv: "DEEPSEEK_API_KEY", keySet: true, balanceUrl: "https://api.deepseek.com/user/balance", contextWindow: 1_000_000, reasoningProtocol: "", supportedEfforts: [], defaultEffort: "" },
-      { name: "mimo-token-plan", builtIn: true, added: false, kind: "openai", baseUrl: "https://token-plan-cn.xiaomimimo.com/v1", modelsUrl: "", models: ["mimo-v2.5-pro", "mimo-v2.5"], visionModels: ["mimo-v2.5"], visionModelsConfigured: true, default: "mimo-v2.5-pro", apiKeyEnv: "MIMO_API_KEY", keySet: false, balanceUrl: "", contextWindow: 1_048_576, reasoningProtocol: "", supportedEfforts: [], defaultEffort: "" },
+      { name: "openai-compatible", builtIn: true, added: false, kind: "openai", baseUrl: "https://api.openai.com/v1", modelsUrl: "", models: ["gpt-5", "gpt-5-mini"], visionModels: [], visionModelsConfigured: false, default: "gpt-5-mini", apiKeyEnv: "OPENAI_API_KEY", keySet: true, balanceUrl: "", contextWindow: 1_000_000, reasoningProtocol: "", supportedEfforts: [], defaultEffort: "" },
     ],
     officialProviders: [
-      { name: "deepseek", builtIn: true, added: false, kind: "openai", baseUrl: "https://api.deepseek.com", modelsUrl: "", models: ["deepseek-v4-flash", "deepseek-v4-pro"], visionModels: [], visionModelsConfigured: false, default: "deepseek-v4-flash", apiKeyEnv: "DEEPSEEK_API_KEY", keySet: true, balanceUrl: "https://api.deepseek.com/user/balance", contextWindow: 1_000_000, reasoningProtocol: "", supportedEfforts: [], defaultEffort: "" },
-      { name: "mimo-api", builtIn: true, added: false, kind: "openai", baseUrl: "https://api.xiaomimimo.com/v1", modelsUrl: "", models: ["mimo-v2.5-pro", "mimo-v2.5", "mimo-v2-omni"], visionModels: ["mimo-v2.5", "mimo-v2-omni"], visionModelsConfigured: true, default: "mimo-v2.5-pro", apiKeyEnv: "MIMO_API_KEY", keySet: false, balanceUrl: "", contextWindow: 1_048_576, reasoningProtocol: "", supportedEfforts: [], defaultEffort: "" },
-      { name: "mimo-token-plan", builtIn: true, added: false, kind: "openai", baseUrl: "https://token-plan-cn.xiaomimimo.com/v1", modelsUrl: "", models: ["mimo-v2.5-pro", "mimo-v2.5"], visionModels: ["mimo-v2.5"], visionModelsConfigured: true, default: "mimo-v2.5-pro", apiKeyEnv: "MIMO_API_KEY", keySet: false, balanceUrl: "", contextWindow: 1_048_576, reasoningProtocol: "", supportedEfforts: [], defaultEffort: "" },
+      { name: "openai-compatible", builtIn: true, added: false, kind: "openai", baseUrl: "https://api.openai.com/v1", modelsUrl: "", models: ["gpt-5", "gpt-5-mini"], visionModels: [], visionModelsConfigured: false, default: "gpt-5-mini", apiKeyEnv: "OPENAI_API_KEY", keySet: true, balanceUrl: "", contextWindow: 1_000_000, reasoningProtocol: "", supportedEfforts: [], defaultEffort: "" },
     ],
     permissions: { mode: "ask", allow: ["ls", "read_file"], ask: [], deny: ["Bash(rm:*)"] },
     sandbox: { bash: "enforce", network: true, workspaceRoot: "", allowWrite: [], shell: "auto" },
@@ -779,7 +776,7 @@ function makeMockApp(): AppBindings {
       noProxy: "",
       proxy: { type: "socks5", server: "127.0.0.1", port: 7890, username: "", password: "" },
     },
-    agent: { temperature: 0.2, maxSteps: 0, plannerMaxSteps: 12, systemPrompt: "You are Reasonix, a coding agent.", coldResumePrune: true, reasoningLanguage: "auto" },
+    agent: { temperature: 0.2, maxSteps: 0, plannerMaxSteps: 12, systemPrompt: "You are Quantara, an agent that drives intelligent manufacturing execution.", coldResumePrune: true, reasoningLanguage: "auto" },
     bot: {
       enabled: !freshMock,
       model: "",
@@ -924,7 +921,7 @@ function makeMockApp(): AppBindings {
     },
   };
   settings.providers = settings.providers.map((provider) =>
-    provider.apiKeyEnv === "DEEPSEEK_API_KEY" ? { ...provider, keySet: !freshMock } : provider,
+    provider.apiKeyEnv === "OPENAI_API_KEY" ? { ...provider, keySet: !freshMock } : provider,
   );
   if (freshMock) {
     settings.configPath = "~/.config/reasonix/config.toml";
@@ -1206,7 +1203,7 @@ function makeMockApp(): AppBindings {
       workspacePath: globalWorkspaceRoot,
       topicId: "",
       topicTitle: "Global",
-      label: "DeepSeek-R1",
+      label: "gpt-5-mini",
       ready: true,
       running: false,
       mode: "normal",
@@ -1227,7 +1224,7 @@ function makeMockApp(): AppBindings {
       topicId: "topic_dev_standard",
       topicTitle: t("mock.trashDevStandardTitle"),
       projectColor: "blue",
-      label: "DeepSeek-R1",
+      label: "gpt-5-mini",
       ready: true,
       running: false,
       mode: "normal",
@@ -1247,7 +1244,7 @@ function makeMockApp(): AppBindings {
       topicId: "topic_p3b_pd",
       topicTitle: "p3b P&D",
       projectColor: "purple",
-      label: "DeepSeek-R1",
+      label: "gpt-5-mini",
       ready: true,
       running: runningMock && mockTopicIsRunning("topic_p3b_pd"),
       mode: "normal",
@@ -1265,7 +1262,7 @@ function makeMockApp(): AppBindings {
       workspacePath: "~/projects/joyquant-db",
       topicId: "topic_global",
       topicTitle: "Global",
-      label: "DeepSeek-R1",
+      label: "gpt-5-mini",
       ready: true,
       running: false,
       mode: "normal",
@@ -1277,13 +1274,13 @@ function makeMockApp(): AppBindings {
     },
   ];
   const mockModelCatalog = [
-    { ref: "deepseek/deepseek-v4-flash", provider: "deepseek", model: "deepseek-v4-flash" },
-    { ref: "deepseek/deepseek-v4-pro", provider: "deepseek", model: "deepseek-v4-pro" },
+    { ref: "openai-compatible/gpt-5-mini", provider: "openai-compatible", model: "gpt-5-mini" },
+    { ref: "openai-compatible/gpt-5", provider: "openai-compatible", model: "gpt-5" },
   ];
   const defaultMockModelRef = mockModelCatalog[0].ref;
   const mockModelRef = (name: string): string => {
     const trimmed = name.trim();
-    if (!trimmed || trimmed === "DeepSeek-R1") return defaultMockModelRef;
+    if (!trimmed || trimmed === "gpt-5-mini") return defaultMockModelRef;
     const exact = mockModelCatalog.find((model) => model.ref === trimmed);
     if (exact) return exact.ref;
     const byModel = mockModelCatalog.find((model) => model.model === trimmed);
@@ -1814,7 +1811,7 @@ function makeMockApp(): AppBindings {
           return this.ContextUsage();
         },
         async Balance() {
-      // Mirror the active mock provider: deepseek-flash carries a balance_url.
+      // Mirror the active mock provider: only providers with a balance URL expose balance.
       const p = settings.providers.find((x) => x.name === settings.defaultModel);
       if (!p?.balanceUrl) return { available: false, display: "" };
           return { available: true, display: "¥128.50" };
@@ -1838,7 +1835,7 @@ function makeMockApp(): AppBindings {
           const collaborationMode = normalizeCollaborationMode(active?.collaborationMode, active?.goal, active ? normalizeMode(active.mode) : "normal");
           const workspacePath = active?.workspacePath || active?.workspaceRoot || active?.cwd || cwd;
           return {
-            label: active?.label ?? "DeepSeek-R1",
+            label: active?.label ?? "gpt-5-mini",
             ready: active?.ready ?? true,
             eventChannel: EVENT_CHANNEL,
             cwd: active?.cwd || cwd,
@@ -1863,7 +1860,7 @@ function makeMockApp(): AppBindings {
           const collaborationMode = normalizeCollaborationMode(tab?.collaborationMode, tab?.goal, tab ? normalizeMode(tab.mode) : "normal");
           const workspacePath = tab?.workspacePath || tab?.workspaceRoot || tab?.cwd || cwd;
           return {
-            label: tab?.label ?? "DeepSeek-R1",
+            label: tab?.label ?? "gpt-5-mini",
             ready: tab?.ready ?? true,
             eventChannel: EVENT_CHANNEL,
             cwd: tab?.cwd || cwd,
@@ -2056,8 +2053,8 @@ function makeMockApp(): AppBindings {
           { label: "trust", insert: "trust", hint: "trust this project's hooks" },
         ],
         "/model": [
-          { label: "deepseek/deepseek-v4-flash", insert: "deepseek/deepseek-v4-flash", hint: "current" },
-          { label: "deepseek/deepseek-v4-pro", insert: "deepseek/deepseek-v4-pro", hint: "" },
+          { label: "openai-compatible/gpt-5-mini", insert: "openai-compatible/gpt-5-mini", hint: "current" },
+          { label: "openai-compatible/gpt-5", insert: "openai-compatible/gpt-5", hint: "" },
         ],
         "/effort": [
           { label: "auto", insert: "auto", hint: "use the model default" },
@@ -2382,11 +2379,9 @@ function makeMockApp(): AppBindings {
     },
     async AddOfficialProviderAccess(kind: string, key: string) {
       const templates: Record<string, ProviderView> = {
-        deepseek: { name: "deepseek", builtIn: true, added: true, kind: "openai", baseUrl: "https://api.deepseek.com", modelsUrl: "", models: ["deepseek-v4-flash", "deepseek-v4-pro"], visionModels: [], visionModelsConfigured: false, default: "deepseek-v4-flash", apiKeyEnv: "DEEPSEEK_API_KEY", keySet: !!key.trim(), balanceUrl: "https://api.deepseek.com/user/balance", contextWindow: 1_000_000, reasoningProtocol: "", supportedEfforts: [], defaultEffort: "" },
-        "mimo-api": { name: "mimo-api", builtIn: true, added: true, kind: "openai", baseUrl: "https://api.xiaomimimo.com/v1", modelsUrl: "", models: ["mimo-v2.5-pro", "mimo-v2.5", "mimo-v2-omni"], visionModels: ["mimo-v2.5", "mimo-v2-omni"], visionModelsConfigured: true, default: "mimo-v2.5-pro", apiKeyEnv: "MIMO_API_KEY", keySet: !!key.trim(), balanceUrl: "", contextWindow: 1_048_576, reasoningProtocol: "", supportedEfforts: [], defaultEffort: "" },
-        "mimo-token-plan": { name: "mimo-token-plan", builtIn: true, added: true, kind: "openai", baseUrl: "https://token-plan-cn.xiaomimimo.com/v1", modelsUrl: "", models: ["mimo-v2.5-pro", "mimo-v2.5"], visionModels: ["mimo-v2.5"], visionModelsConfigured: true, default: "mimo-v2.5-pro", apiKeyEnv: "MIMO_API_KEY", keySet: !!key.trim(), balanceUrl: "", contextWindow: 1_048_576, reasoningProtocol: "", supportedEfforts: [], defaultEffort: "" },
+        "openai-compatible": { name: "openai-compatible", builtIn: true, added: true, kind: "openai", baseUrl: "https://api.openai.com/v1", modelsUrl: "", models: ["gpt-5", "gpt-5-mini"], visionModels: [], visionModelsConfigured: false, default: "gpt-5-mini", apiKeyEnv: "OPENAI_API_KEY", keySet: !!key.trim(), balanceUrl: "", contextWindow: 1_000_000, reasoningProtocol: "openai", supportedEfforts: ["low", "medium", "high"], defaultEffort: "medium" },
       };
-      const next = templates[kind] ?? templates.deepseek;
+      const next = templates[kind] ?? templates["openai-compatible"];
       const i = settings.providers.findIndex((x) => x.name === next.name);
       if (i >= 0) settings.providers[i] = { ...settings.providers[i], ...next, keySet: next.keySet || settings.providers[i].keySet };
       else settings.providers.push(next);
@@ -2396,9 +2391,8 @@ function makeMockApp(): AppBindings {
       if (!p.baseUrl.trim()) throw new Error(t("settings.fetchModelsMissingBaseUrl"));
       if (!p.apiKeyEnv.trim()) throw new Error(t("settings.fetchModelsMissingKeyEnv"));
       await delay(350);
-      if (p.baseUrl.includes("deepseek")) return ["deepseek-v4-flash", "deepseek-v4-pro"];
-      if (p.baseUrl.includes("mimo") || p.baseUrl.includes("xiaomimimo")) return ["mimo-v2.5", "mimo-v2.5-pro"];
-      return ["gpt-5", "gpt-5-mini", "qwen3-coder"];
+      if (p.baseUrl.includes("api.openai.com")) return ["gpt-5", "gpt-5-mini", "gpt-4.1"];
+      return ["gpt-5", "gpt-5-mini", "o4-mini"];
     },
     async DeleteProvider(name: string) {
       settings.providers = settings.providers.filter((p) => p.name !== name);

@@ -7,23 +7,34 @@ import { app, openExternal } from "../lib/bridge";
 // unmounts us so the rebuilt controller's main UI takes over.
 export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
   const t = useT();
-  const [value, setValue] = useState("");
+  const [baseUrl, setBaseUrl] = useState("https://api.openai.com/v1");
+  const [apiKey, setApiKey] = useState("");
+  const [model, setModel] = useState("gpt-5-mini");
   const [state, setState] = useState<"idle" | "validating" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const baseUrlRef = useRef<HTMLInputElement>(null);
+  const apiKeyRef = useRef<HTMLInputElement>(null);
 
   const submit = useCallback(async () => {
-    const key = value.trim();
+    const url = baseUrl.trim();
+    const key = apiKey.trim();
+    const selectedModel = model.trim() || "gpt-5-mini";
+    if (!url) {
+      setError(t("onboarding.error.emptyUrl"));
+      setState("error");
+      baseUrlRef.current?.focus();
+      return;
+    }
     if (!key) {
       setError(t("onboarding.error.empty"));
       setState("error");
-      inputRef.current?.focus();
+      apiKeyRef.current?.focus();
       return;
     }
     setState("validating");
     setError(null);
     try {
-      await app.ConnectKey(key);
+      await app.ConnectKey({ baseUrl: url, apiKey: key, model: selectedModel });
       onComplete();
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -31,36 +42,57 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
         setError(t("onboarding.error.invalid"));
       } else if (/network|unreachable|timeout|dial/i.test(msg)) {
         setError(t("onboarding.error.network"));
+      } else if (/base url/i.test(msg)) {
+        setError(t("onboarding.error.url"));
       } else {
         setError(msg || t("onboarding.error.unknown"));
       }
       setState("error");
-      inputRef.current?.focus();
-      inputRef.current?.select();
+      apiKeyRef.current?.focus();
+      apiKeyRef.current?.select();
     }
-  }, [t, value, onComplete]);
+  }, [apiKey, baseUrl, model, onComplete, t]);
 
   return (
     <div className="onboarding">
       <div className="onboarding__card">
-        <img src={logo} className="onboarding__logo" alt="Reasonix" draggable={false} />
+        <img src={logo} className="onboarding__logo" alt="Quantara" draggable={false} />
         <div className="onboarding__title">{t("onboarding.title")}</div>
         <div className="onboarding__tag">{t("onboarding.tagline")}</div>
+
+        <label className="onboarding__label" htmlFor="onboarding-url">
+          {t("onboarding.urlLabel")}
+        </label>
+        <input
+          id="onboarding-url"
+          ref={baseUrlRef}
+          className="onboarding__input"
+          type="text"
+          autoComplete="off"
+          spellCheck={false}
+          placeholder={t("onboarding.urlPlaceholder")}
+          value={baseUrl}
+          onChange={(e) => {
+            setBaseUrl(e.target.value);
+            if (state === "error") setState("idle");
+          }}
+          disabled={state === "validating"}
+        />
 
         <label className="onboarding__label" htmlFor="onboarding-key">
           {t("onboarding.inputLabel")}
         </label>
         <input
           id="onboarding-key"
-          ref={inputRef}
+          ref={apiKeyRef}
           className="onboarding__input"
           type="password"
           autoComplete="off"
           spellCheck={false}
           placeholder={t("onboarding.inputPlaceholder")}
-          value={value}
+          value={apiKey}
           onChange={(e) => {
-            setValue(e.target.value);
+            setApiKey(e.target.value);
             if (state === "error") setState("idle");
           }}
           onKeyDown={(e) => {
@@ -68,6 +100,24 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
               e.preventDefault();
               void submit();
             }
+          }}
+          disabled={state === "validating"}
+        />
+
+        <label className="onboarding__label" htmlFor="onboarding-model">
+          {t("onboarding.modelLabel")}
+        </label>
+        <input
+          id="onboarding-model"
+          className="onboarding__input"
+          type="text"
+          autoComplete="off"
+          spellCheck={false}
+          placeholder={t("onboarding.modelPlaceholder")}
+          value={model}
+          onChange={(e) => {
+            setModel(e.target.value);
+            if (state === "error") setState("idle");
           }}
           disabled={state === "validating"}
         />
@@ -97,7 +147,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
           <button
             type="button"
             className="onboarding__link"
-            onClick={() => openExternal("https://platform.deepseek.com/api_keys")}
+            onClick={() => openExternal("https://platform.openai.com/api-keys")}
           >
             {t("onboarding.getKey")}
           </button>

@@ -590,7 +590,7 @@ const PROXY_MODES = ["auto", "custom", "off"] as const;
 // can additionally add arbitrary custom names via the "Add" input. The order
 // here is what the user sees in the dropdown.
 const EFFORT_PRESETS: readonly string[] = ["low", "medium", "high", "xhigh", "max"];
-const REASONING_PROTOCOLS: readonly string[] = ["", "deepseek", "openai", "none"];
+const REASONING_PROTOCOLS: readonly string[] = ["", "openai", "none"];
 const PROXY_TYPES = ["http", "https", "socks5", "socks5h"] as const;
 const LANGUAGE_PREFS: LangPref[] = ["", "zh", "en"];
 const AUTO_PLAN_MODES = ["off", "on"] as const;
@@ -3639,12 +3639,10 @@ type ProviderModelDraft = {
 };
 
 type AddProviderMode = null | "official" | "custom";
-type OfficialProviderKind = "deepseek" | "mimo-api" | "mimo-token-plan";
+type OfficialProviderKind = "openai-compatible";
 
 const OFFICIAL_PROVIDER_CHOICES: Array<{ kind: OfficialProviderKind; labelKey: DictKey; descKey: DictKey; keyEnv: string }> = [
-  { kind: "deepseek", labelKey: "settings.addProvider.official.deepseek", descKey: "settings.addProvider.official.deepseekDesc", keyEnv: "DEEPSEEK_API_KEY" },
-  { kind: "mimo-api", labelKey: "settings.addProvider.official.mimoApi", descKey: "settings.addProvider.official.mimoApiDesc", keyEnv: "MIMO_API_KEY" },
-  { kind: "mimo-token-plan", labelKey: "settings.addProvider.official.mimoTokenPlan", descKey: "settings.addProvider.official.mimoTokenPlanDesc", keyEnv: "MIMO_API_KEY" },
+  { kind: "openai-compatible", labelKey: "settings.addProvider.official.openaiCompatible", descKey: "settings.addProvider.official.openaiCompatibleDesc", keyEnv: "OPENAI_API_KEY" },
 ];
 
 function AddProviderPanel({
@@ -3665,7 +3663,7 @@ function AddProviderPanel({
   onAddCustom: (p: ProviderView) => void | Promise<void>;
 }) {
   const t = useT();
-  const [officialKind, setOfficialKind] = useState<OfficialProviderKind>("deepseek");
+  const [officialKind, setOfficialKind] = useState<OfficialProviderKind>("openai-compatible");
   const [key, setKey] = useState("");
   const selected = OFFICIAL_PROVIDER_CHOICES.find((choice) => choice.kind === officialKind) ?? OFFICIAL_PROVIDER_CHOICES[0];
 
@@ -4093,29 +4091,16 @@ function providerBaseHost(baseUrl: string): string {
 }
 
 function canonicalOfficialProviderName(name: string): string {
-  switch (name.trim()) {
-    case "deepseek-flash":
-    case "deepseek-pro":
-      return "deepseek";
-    case "mimo":
-    case "xiaomi-mimo":
-    case "xiaomi_mimo":
-      return "mimo-api";
-    case "mimo-pro":
-    case "mimo-flash":
-      return "mimo-token-plan";
-    default:
-      return name.trim();
-  }
+  const trimmed = name.trim();
+  if (trimmed === "quantara-openai") return "openai-compatible";
+  return trimmed;
 }
 
 function officialProviderKind(p: ProviderView): string {
   if (!p.builtIn) return "";
   const name = canonicalOfficialProviderName(p.name);
   const host = providerBaseHost(p.baseUrl);
-  if (name === "deepseek" && host === "api.deepseek.com") return "deepseek";
-  if (name === "mimo-token-plan" && host === "token-plan-cn.xiaomimimo.com") return "mimo-token-plan";
-  if (name === "mimo-api" && host === "api.xiaomimimo.com") return "mimo-api";
+  if (name === "openai-compatible" && (host === "api.openai.com" || host.endsWith(".openai.com"))) return "openai-compatible";
   return "";
 }
 
@@ -4127,17 +4112,13 @@ function providerGroupID(p: ProviderView): string {
 
 function providerGroupLabel(p: ProviderView, t?: ReturnType<typeof useT>): string {
   const id = providerGroupID(p);
-  if (id === "builtin:deepseek") return t ? t("settings.providerLabel.deepseek") : "DeepSeek";
-  if (id === "builtin:mimo-api") return t ? t("settings.providerLabel.mimoApi") : "Mimo API";
-  if (id === "builtin:mimo-token-plan") return t ? t("settings.providerLabel.mimoTokenPlan") : "Mimo Token Plan";
+  if (id === "builtin:openai-compatible") return t ? t("settings.providerLabel.openaiCompatible") : "OpenAI Compatible";
   return p.name;
 }
 
 function providerGroupDescription(p: ProviderView, t: ReturnType<typeof useT>): string {
   const id = providerGroupID(p);
-  if (id === "builtin:deepseek") return t("settings.providerDesc.deepseek");
-  if (id === "builtin:mimo-api") return t("settings.providerDesc.mimoApi");
-  if (id === "builtin:mimo-token-plan") return t("settings.providerDesc.mimoTokenPlan");
+  if (id === "builtin:openai-compatible") return t("settings.providerDesc.openaiCompatible");
   return p.baseUrl;
 }
 

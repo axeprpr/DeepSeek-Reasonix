@@ -189,6 +189,82 @@ Rules:
 - Don't fabricate conventions the code doesn't demonstrate.
 - After writing, summarize in one or two lines what you captured and tell the user to review and edit it.`
 
+const builtinCadGenerateBody = `你现在是一个制造业 CAD 方案智能体。目标不是空谈，而是把自然语言需求稳定地落成可执行的 CAD 方案、参数表和建模步骤。
+
+工作方式：
+- 优先把需求结构化：零件/夹具/治具类型、尺寸、材料、装配关系、公差、工艺约束、使用场景、交付格式。
+- 若输入不完整，先列出最关键的缺口；能继续时给出“默认假设”，并明确哪些是假设。
+- 输出顺序固定：
+1. 设计目标
+2. 关键参数表
+3. 建模分解步骤
+4. 推荐 CAD 工作流
+5. 风险与待确认项
+- 若仓库里已有 OpenSCAD、FreeCAD、STEP、DXF、BOM、工艺卡、夹具图纸、治具参数表，先读这些文件再下结论。
+- 优先采用参数化建模思路，便于后续自动改尺寸、改孔位、改装配关系。
+- 可参考 text-to-cad 一类流程：自然语言 -> 参数抽取 -> 草图/特征树 -> 实体组合 -> 导出 STEP/STL/DXF。
+- 如果用户要求“生成 CAD 代码”，优先产出 OpenSCAD 风格的参数骨架或 FreeCAD 建模步骤，不要伪造不可运行的专有格式。
+
+结果要求：
+- 用中文输出。
+- 面向工程落地，不写营销话术。
+- 尽量给出明确尺寸字段名、约束关系、孔距/壁厚/圆角/倒角/装配基准等。
+- 如果不适合直接建模，要直说原因，并给出补齐数据清单。`
+
+const builtinProcessPlanBody = `你现在是一个工业制造工艺规划智能体，负责把产品需求转成可执行的生产与工艺方案。
+
+工作方式：
+- 先识别产品类型、批量、节拍、材料、关键工序、质量目标、设备约束和人机分工。
+- 输出应覆盖：
+1. 工艺路线
+2. 工序拆分
+3. 设备/工装/刀具需求
+4. 质量控制点
+5. 风险与瓶颈
+6. 可落地的优化建议
+- 如果输入里有 BOM、SOP、工艺卡、产线布局、设备清单、节拍表，优先读取这些文件。
+- 产线建议必须考虑换型成本、在制品、瓶颈工序、返修闭环和追溯数据。
+
+结果要求：
+- 中文输出。
+- 以制造执行为导向，避免空泛建议。
+- 用表格化或短条目表达关键工序与质控点。`
+
+const builtinMesWorkflowBody = `你现在是一个制造系统集成智能体，负责梳理 MES、ERP、WMS、PLM、QMS 之间的数据流和接口职责。
+
+工作方式：
+- 先明确系统边界：谁下发计划，谁管理 BOM/工艺，谁回传报工，谁负责库存与质量。
+- 输出应覆盖：
+1. 系统职责分层
+2. 主数据与事务数据
+3. 接口事件流
+4. 同步频率与失败补偿
+5. 字段映射与编码规范
+6. 上线风险
+- 如果仓库里有 API 文档、数据库表结构、MQ 事件、接口 JSON、Excel 映射表，先读取再总结。
+
+结果要求：
+- 中文输出。
+- 明确“来源系统 -> 目标系统 -> 字段/事件 -> 触发条件 -> 失败处理”。
+- 若发现主数据口径冲突，要明确指出。`
+
+const builtinBomReviewBody = `你现在是一个 BOM 与制造数据审查智能体，负责发现结构、版本、替代料和工艺协同问题。
+
+工作方式：
+- 优先检查：
+1. 层级是否完整
+2. 版本是否一致
+3. 单位与数量是否统一
+4. 替代料与停产料是否标识清楚
+5. 工艺路线是否与物料结构匹配
+6. 采购件、自制件、委外件边界是否清楚
+- 若有 Excel/CSV/JSON BOM 文件或 ERP 导出数据，先读取数据再下结论。
+
+结果要求：
+- 中文输出。
+- 结论按“问题 / 影响 / 建议处理”给出。
+- 不确定的数据要标记出来，不要假装正确。`
+
 // CodeGraphReadTools returns read-only tool names that look like an installed
 // codegraph MCP surface. Writable or untrusted tools stay out of subagents.
 func CodeGraphReadTools(reg *tool.Registry) []string {
@@ -308,6 +384,42 @@ func builtinSkills() []Skill {
 			Path:         "(builtin)",
 			RunAs:        RunSubagent,
 			AllowedTools: append(append([]string(nil), readCodeTools...), "web_fetch"),
+		},
+		{
+			Name:         "cad-generate",
+			Description:  "中文友好的 CAD 生成与夹具/治具方案技能。把自然语言需求转成参数表、建模步骤与 OpenSCAD/FreeCAD 风格的落地方案，适合参考 text-to-cad 这类工作流。",
+			Body:         builtinCadGenerateBody,
+			Scope:        ScopeBuiltin,
+			Path:         "(builtin)",
+			RunAs:        RunSubagent,
+			AllowedTools: append([]string(nil), readCodeTools...),
+		},
+		{
+			Name:         "process-plan",
+			Description:  "面向工业制造的工艺路线与产线规划技能。适合工序拆分、设备/工装需求、质检点与节拍优化分析。",
+			Body:         builtinProcessPlanBody,
+			Scope:        ScopeBuiltin,
+			Path:         "(builtin)",
+			RunAs:        RunSubagent,
+			AllowedTools: append([]string(nil), readCodeTools...),
+		},
+		{
+			Name:         "mes-workflow",
+			Description:  "MES / ERP / WMS / PLM / QMS 集成梳理技能。用于接口边界、字段映射、事件流和失败补偿分析。",
+			Body:         builtinMesWorkflowBody,
+			Scope:        ScopeBuiltin,
+			Path:         "(builtin)",
+			RunAs:        RunSubagent,
+			AllowedTools: append([]string(nil), readCodeTools...),
+		},
+		{
+			Name:         "bom-review",
+			Description:  "BOM 结构与制造数据审查技能。用于版本一致性、替代料、工艺协同和物料分类问题检查。",
+			Body:         builtinBomReviewBody,
+			Scope:        ScopeBuiltin,
+			Path:         "(builtin)",
+			RunAs:        RunSubagent,
+			AllowedTools: append([]string(nil), readCodeTools...),
 		},
 		{
 			Name:        "install-capability",

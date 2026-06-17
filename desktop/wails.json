@@ -1,7 +1,7 @@
 {
   "$schema": "https://wails.io/schemas/config.v2.json",
-  "name": "reasonix-desktop",
-  "outputfilename": "reasonix-desktop",
+  "name": "quantara-desktop",
+  "outputfilename": "quantara-desktop",
   "frontend:install": "pnpm install",
   "frontend:build": "pnpm build",
   "frontend:dev:watcher": "pnpm dev",
@@ -10,10 +10,10 @@
     "name": "esengine"
   },
   "info": {
-    "companyName": "Reasonix",
-    "productName": "Reasonix",
+    "companyName": "Quantara",
+    "productName": "Quantara",
     "productVersion": "0.0.0",
-    "copyright": "Copyright © 2026 Reasonix Contributors",
-    "comments": "Reasonix desktop — a Wails shell around the Go kernel."
+    "copyright": "Copyright © 2026 Quantara Contributors",
+    "comments": "Quantara desktop — a Wails shell around the Go kernel."
   }
 }

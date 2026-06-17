@@ -1,4 +1,4 @@
-// Command reasonix-desktop is the Wails shell around the Reasonix kernel: a native
+// Command quantara-desktop is the Wails shell around the Quantara kernel: a native
 // window hosting a webview frontend, with the Go-side control.Controller bound
 // directly to the UI (no HTTP hop — bindings in, runtime events out). It lives in
 // a nested module (reasonix/desktop) so the CGO/WebKit desktop build never touches
@@ -85,7 +85,7 @@ func main() {
 	}
 
 	err := wails.Run(&options.App{
-		Title:     "Reasonix",
+		Title:     "Quantara",
 		Width:     width,
 		Height:    height,
 		MinWidth:  760,
@@ -129,7 +129,7 @@ func main() {
 			WebviewGpuIsDisabled: windowsWebview2GPUDisabled(),
 		},
 		Linux: &linux.Options{
-			ProgramName: "Reasonix",
+			ProgramName: "Quantara",
 			// WebKitGTK GPU compositing is inconsistent across distros/drivers and
 			// is the one real cross-platform rough edge for a Go+webview stack:
 			// "always" can yield blank or flickering webviews on some setups, so

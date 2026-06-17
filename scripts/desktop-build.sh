@@ -5,12 +5,12 @@
 #
 # Output lands in <repo>/dist/ with stable, platform-keyed names that
 # desktop/cmd/sign's `manifest` subcommand maps back to update.PlatformKey:
-#   macOS:   Reasonix-darwin-<arch>.zip                  (ditto archive; updater channel)
-#            Reasonix-darwin-universal.dmg               (drag-to-install; human download)
-#   Windows: Reasonix-windows-<arch>-installer.exe       (NSIS per-user installer; updater channel)
-#            Reasonix-windows-<arch>.zip                 (portable human download)
-#   Linux:   Reasonix-linux-<arch>.tar.gz                (bare binary; updater channel)
-#            Reasonix-linux-<arch>.deb                   (Debian/Ubuntu package; human download)
+#   macOS:   Quantara-darwin-<arch>.zip                  (ditto archive; updater channel)
+#            Quantara-darwin-universal.dmg               (drag-to-install; human download)
+#   Windows: Quantara-windows-<arch>-installer.exe       (NSIS per-user installer; updater channel)
+#            Quantara-windows-<arch>.zip                 (portable human download)
+#   Linux:   Quantara-linux-<arch>.tar.gz                (bare binary; updater channel)
+#            Quantara-linux-<arch>.deb                   (Debian/Ubuntu package; human download)
 #
 # Usage: scripts/desktop-build.sh <os/arch> <version> [channel]
 #   e.g. scripts/desktop-build.sh darwin/arm64 v1.1.0
@@ -25,8 +25,8 @@ os="${PLATFORM%/*}"
 arch="${PLATFORM#*/}"
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-APPNAME="Reasonix"            # wails.json productName -> Reasonix.app
-BINNAME="reasonix-desktop"    # wails.json outputfilename -> linux binary name
+APPNAME="Quantara"            # wails.json productName -> Quantara.app
+BINNAME="quantara-desktop"    # wails.json outputfilename -> linux binary name
 
 cd "$ROOT/desktop"
 
@@ -54,11 +54,11 @@ mkdir -p "$ROOT/dist"
 
 case "$os" in
 darwin)
-	# Wails names the bundle after outputfilename (reasonix-desktop.app); repackage
-	# it as Reasonix.app for a clean user-facing name.
+	# Wails names the bundle after outputfilename (quantara-desktop.app); repackage
+	# it as Quantara.app for a clean user-facing name.
 	staging=$(mktemp -d)
 	app="$staging/${APPNAME}.app"
-	cp -R "build/bin/reasonix-desktop.app" "$app"
+	cp -R "build/bin/quantara-desktop.app" "$app"
 
 	# Two signing paths, selected by HAS_APPLE_CERT (set by release-desktop.yml when
 	# the APPLE_* secrets are present). With a real Developer ID cert + notarization

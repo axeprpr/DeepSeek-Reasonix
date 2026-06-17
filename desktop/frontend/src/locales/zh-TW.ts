@@ -213,13 +213,13 @@ export const zhTW: Record<DictKey, string> = {
   "caps.hideDiagnostics": "隱藏診斷路徑",
 
   // 歡迎 / 空狀態
-  "welcome.tagline": "一個編碼智慧體 —— 描述任務或隨便問點什麼。",
+  "welcome.tagline": "圍繞工藝、產線、BOM、MES/ERP 與 CAD 任務直接下達指令。",
   "welcome.hintCommands": "命令",
   "welcome.hintFiles": "引用檔案",
   "welcome.hintSend": "傳送",
-  "welcome.ex1": "講講這個程式碼庫的架構",
-  "welcome.ex2": "總結最近的 git 變更",
-  "welcome.ex3": "智慧體的執行主循環在哪，它做了什麼？",
+  "welcome.ex1": "把這個零件需求轉成夾具設計思路和 CAD 建模步驟",
+  "welcome.ex2": "根據 BOM 和交期限制提出產線排程建議",
+  "welcome.ex3": "梳理 MES、ERP、WMS 之間的資料介面與同步流程",
 
   // 輸入框
   "composer.placeholder": "給 Reasonix 發訊息…  ( / 命令 · @ 檔案 )",
@@ -893,17 +893,23 @@ export const zhTW: Record<DictKey, string> = {
   "updater.dismiss": "稍後",
 
   // onboarding — first-run API-key overlay
-  "onboarding.title": "連線 Reasonix",
-  "onboarding.tagline": "貼上一個 DeepSeek API key 即可開始。金鑰僅存於本應用的本機憑證檔案，不會傳送到任何地方。",
-  "onboarding.inputLabel": "API 金鑰",
+  "onboarding.title": "連線 Quantara",
+  "onboarding.tagline": "請先設定 OpenAI 相容協議的 API URL 與 API Key。金鑰只會儲存在本機憑證存放區。",
+  "onboarding.urlLabel": "API URL",
+  "onboarding.urlPlaceholder": "https://api.openai.com/v1",
+  "onboarding.inputLabel": "API Key",
   "onboarding.inputPlaceholder": "sk-…",
+  "onboarding.modelLabel": "預設模型",
+  "onboarding.modelPlaceholder": "gpt-5-mini",
   "onboarding.submit": "連線並開始",
   "onboarding.validating": "驗證中…",
   "onboarding.getKey": "如何取得 API key？",
   "onboarding.privacy": "僅儲存在本應用的本機憑證檔案",
+  "onboarding.error.emptyUrl": "請先填寫 API URL。",
+  "onboarding.error.url": "API URL 格式不正確。",
   "onboarding.error.empty": "請先貼上金鑰。",
   "onboarding.error.invalid": "這個 key 無法使用 —— 檢查一下是否已啟用、是否開通了計費。",
-  "onboarding.error.network": "無法連線 DeepSeek —— 檢查網路後再試。",
+  "onboarding.error.network": "無法連線到設定的 API URL —— 請檢查網路後重試。",
   "onboarding.error.unknown": "出錯啦：{msg}",
   "onboarding.skip": "稍後設定",
 

@@ -200,7 +200,7 @@ func RenderTOMLForScope(c *Config, scope RenderScope) string {
 	if c.Agent.AutoPlanClassifier != "" {
 		fmt.Fprintf(&b, "auto_plan_classifier = %q   # optional provider/model for borderline auto-plan decisions\n", c.Agent.AutoPlanClassifier)
 	} else {
-		b.WriteString("# auto_plan_classifier = \"deepseek-flash\"   # optional; only used for borderline tasks\n")
+		b.WriteString("# auto_plan_classifier = \"quantara-openai/gpt-5-mini\"   # optional; only used for borderline tasks\n")
 	}
 	fmt.Fprintf(&b, "soft_compact_ratio  = %s   # notice only; keeps cache-first prefix intact\n", formatFloat(c.Agent.SoftCompactRatio))
 	fmt.Fprintf(&b, "compact_ratio       = %s   # try compacting when prompt reaches this fraction\n", formatFloat(c.Agent.CompactRatio))
@@ -219,17 +219,17 @@ func RenderTOMLForScope(c *Config, scope RenderScope) string {
 	if c.Agent.PlannerModel != "" {
 		fmt.Fprintf(&b, "planner_model = %q   # low-frequency planner (two-model collaboration)\n", c.Agent.PlannerModel)
 	} else {
-		b.WriteString("# planner_model = \"mimo\"   # optional: enable two-model collaboration\n")
+		b.WriteString("# planner_model = \"quantara-openai/gpt-5\"   # optional: dedicated planner model\n")
 	}
 	if c.Agent.SubagentModel != "" {
 		fmt.Fprintf(&b, "subagent_model = %q   # default model for runAs=subagent skills\n", c.Agent.SubagentModel)
 	} else {
-		b.WriteString("# subagent_model = \"deepseek-pro\"   # optional default for runAs=subagent skills\n")
+		b.WriteString("# subagent_model = \"quantara-openai/gpt-5\"   # optional default for runAs=subagent skills\n")
 	}
 	if len(c.Agent.SubagentModels) > 0 {
 		fmt.Fprintf(&b, "subagent_models = %s   # per-skill overrides\n", renderStringMap(c.Agent.SubagentModels))
 	} else {
-		b.WriteString("# subagent_models = { review = \"deepseek-pro\", security_review = \"deepseek-pro\" }   # per-skill overrides\n")
+		b.WriteString("# subagent_models = { review = \"quantara-openai/gpt-5\", security_review = \"quantara-openai/gpt-5\" }   # per-skill overrides\n")
 	}
 	if c.Agent.SubagentEffort != "" {
 		fmt.Fprintf(&b, "subagent_effort = %q   # default effort for subagent entry points\n", c.Agent.SubagentEffort)

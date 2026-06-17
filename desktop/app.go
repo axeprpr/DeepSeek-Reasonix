@@ -28,7 +28,6 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
 	"reasonix/internal/agent"
-	"reasonix/internal/billing"
 	"reasonix/internal/boot"
 	"reasonix/internal/config"
 	"reasonix/internal/control"
@@ -5926,12 +5925,11 @@ func parseScope(s string) memory.Scope {
 	}
 }
 
-// onboardingKeyEnv is the default provider (deepseek) key from config.Default().
-const onboardingKeyEnv = "DEEPSEEK_API_KEY"
-
-// onboardingBalanceURL doubles as a zero-token connectivity + auth probe:
-// billing.FetchWithClient surfaces 401/403 for a bad key.
-const onboardingBalanceURL = "https://api.deepseek.com/user/balance"
+const (
+	onboardingProviderName = "openai-compatible"
+	onboardingKeyEnv       = "OPENAI_API_KEY"
+	onboardingDefaultURL   = "https://api.openai.com/v1"
+)
 
 // NativeConfirmRequest is the payload for ConfirmAction — a native OS confirmation
 // dialog that replaces web-style confirm() for destructive or important actions.
@@ -5999,24 +5997,48 @@ func (a *App) NeedsOnboarding() bool {
 	return strings.TrimSpace(os.Getenv(onboardingKeyEnv)) == ""
 }
 
-// ConnectKey validates apiKey against the balance endpoint, persists it to the
-// global credential store, and rebuilds the controller so the new key takes effect.
-func (a *App) ConnectKey(apiKey string) (string, error) {
-	apiKey = strings.TrimSpace(apiKey)
-	if apiKey == "" {
-		return "", fmt.Errorf("key is required")
+type OnboardingConnection struct {
+	BaseURL string `json:"baseUrl"`
+	APIKey  string `json:"apiKey"`
+	Model   string `json:"model"`
+}
+
+// ConnectKey configures a default OpenAI-compatible provider from first-run onboarding.
+func (a *App) ConnectKey(payload OnboardingConnection) (string, error) {
+	baseURL := strings.TrimSpace(payload.BaseURL)
+	apiKey := strings.TrimSpace(payload.APIKey)
+	model := strings.TrimSpace(payload.Model)
+	if baseURL == "" {
+		return "", fmt.Errorf("base url is required")
 	}
-	ctx, cancel := context.WithTimeout(a.ctx, 8*time.Second)
-	defer cancel()
-	if _, err := billing.FetchWithClient(ctx, nil, onboardingBalanceURL, apiKey); err != nil {
-		return "", fmt.Errorf("validate: %w", err)
+	if apiKey == "" {
+		return "", fmt.Errorf("api key is required")
+	}
+	if model == "" {
+		model = "gpt-5-mini"
+	}
+	if _, err := url.ParseRequestURI(baseURL); err != nil {
+		return "", fmt.Errorf("invalid base url: %w", err)
 	}
 	warning, err := a.saveProviderCredential(onboardingKeyEnv, apiKey)
 	if err != nil {
 		return "", fmt.Errorf("save: %w", err)
 	}
+	if err := a.applyConfigChange(func(c *config.Config) error {
+		c.DefaultModel = onboardingProviderName
+		return c.UpsertProvider(config.ProviderEntry{
+			Name:          onboardingProviderName,
+			Kind:          "openai",
+			BaseURL:       baseURL,
+			Models:        []string{model},
+			Default:       model,
+			APIKeyEnv:     onboardingKeyEnv,
+			ContextWindow: 1_000_000,
+		})
+	}); err != nil {
+		return warning, err
+	}
 	if err := a.rebuild(); err != nil {
-		// Key is persisted; surface the failure but let the next rebuild load it.
 		a.mu.Lock()
 		if tab := a.activeTabLocked(); tab != nil {
 			tab.StartupErr = err.Error()
