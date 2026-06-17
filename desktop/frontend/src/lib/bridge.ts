@@ -2631,13 +2631,19 @@ function makeMockApp(): AppBindings {
     // Dev seam: drives the overlay flow in the browser until ConnectKey sets the
     // key. Matches ConnectKey on apiKeyEnv so the two stay in sync.
     async NeedsOnboarding() {
-      return !settings.providers.find((p) => p.apiKeyEnv === "DEEPSEEK_API_KEY")?.keySet;
+      return !settings.providers.find((p) => p.apiKeyEnv === "OPENAI_API_KEY")?.keySet;
     },
-    async ConnectKey(apiKey: string) {
-      if (!apiKey.trim()) throw new Error("key is required");
+    async ConnectKey(payload: { baseUrl: string; apiKey: string; model?: string }) {
+      if (!payload.baseUrl.trim()) throw new Error("base url is required");
+      if (!payload.apiKey.trim()) throw new Error("key is required");
       settings.providers.forEach((p) => {
-        if (p.apiKeyEnv === "DEEPSEEK_API_KEY") p.keySet = true;
+        if (p.apiKeyEnv === "OPENAI_API_KEY") {
+          p.keySet = true;
+          p.baseUrl = payload.baseUrl.trim();
+          if (payload.model?.trim()) p.default = payload.model.trim();
+        }
       });
+      settings.defaultModel = "openai-compatible";
       await delay(300);
       return "";
     },

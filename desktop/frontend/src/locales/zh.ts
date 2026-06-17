@@ -843,6 +843,7 @@ export const zh: Record<DictKey, string> = {
   "settings.providerAccessEmptyTitle": "还没有添加供应商",
   "settings.builtinProviders": "内置供应商",
   "settings.builtinProvider": "内置",
+  "settings.providerLabel.mimo": "Mimo 官方",
   "settings.providerLabel.deepseek": "DeepSeek 官方",
   "settings.providerLabel.mimoApi": "Mimo API 官方",
   "settings.providerLabel.mimoTokenPlan": "Mimo Token Plan",
