@@ -1,0 +1,53 @@
+name: Build desktop (Windows)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version string passed into the desktop binary"
+        required: false
+        default: "v0.0.0-fork"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build windows-amd64
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: desktop/go.mod
+          cache: true
+          cache-dependency-path: desktop/go.sum
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - name: Install NSIS
+        run: |
+          choco install nsis -y --no-progress
+          echo "C:\Program Files (x86)\NSIS" >> "$GITHUB_PATH"
+
+      - name: Install Wails CLI
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0
+
+      - name: Build and package
+        run: scripts/desktop-build.sh "windows/amd64" "${{ inputs.version }}" stable
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: reasonix-desktop-windows-amd64
+          path: dist/*
+          if-no-files-found: error

@@ -95,6 +95,19 @@ Fedora deps: `sudo dnf install webkit2gtk4.1-devel gtk3-devel`.
 `.gitkeep` that keeps the Go `//go:embed all:frontend/dist` compilable on a fresh
 checkout). A bare `go build` without a prior `pnpm build` produces a blank window.
 
+### GitHub Actions build for forks
+
+If you only want a Windows desktop artifact from a fork, use the workflow
+`.github/workflows/build-desktop-windows.yml`. It skips the release/mirror/signing
+pipeline and just uploads the packaged desktop build as an Actions artifact.
+
+- Open **Actions -> Build desktop (Windows)**
+- Click **Run workflow**
+- Download the artifact named `reasonix-desktop-windows-amd64`
+
+This is the simplest path for fork validation. The full `release-desktop.yml`
+workflow is still intended for tagged upstream-style releases.
+
 ## Releases & auto-update
 
 Desktop releases ride their own tag namespace, `desktop-v<semver>` (plain `v*`
