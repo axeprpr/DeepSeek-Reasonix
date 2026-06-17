@@ -1,4 +1,4 @@
-import logoWordmark from "../assets/logo-wordmark.svg";
+import quantaraLogo from "../assets/quantara-logo.jpg";
 import { useT } from "../lib/i18n";
 
 // Welcome is the empty-state landing: a one-liner, the input affordances
@@ -11,7 +11,7 @@ export function Welcome({ onPrompt }: { onPrompt: (text: string) => void }) {
   return (
     <div className="welcome welcome--brand">
       <span className="welcome__brand">
-        <img src={logoWordmark} className="welcome__brand-logo" alt="Quantara" draggable={false} />
+        <img src={quantaraLogo} className="welcome__brand-logo welcome__brand-logo--image" alt="Quantara" draggable={false} />
       </span>
       <h2 className="welcome__title">{t("welcome.title")}</h2>
       <div className="welcome__tag">{t("welcome.tagline")}</div>
