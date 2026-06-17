@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import logo from "../assets/logo.svg";
+import quantaraLogo from "../assets/quantara-logo.jpg";
 import { useT } from "../lib/i18n";
 import { app, openExternal } from "../lib/bridge";
 
@@ -56,7 +56,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
   return (
     <div className="onboarding">
       <div className="onboarding__card">
-        <img src={logo} className="onboarding__logo" alt="Quantara" draggable={false} />
+        <img src={quantaraLogo} className="onboarding__logo" alt="Quantara" draggable={false} />
         <div className="onboarding__title">{t("onboarding.title")}</div>
         <div className="onboarding__tag">{t("onboarding.tagline")}</div>
 

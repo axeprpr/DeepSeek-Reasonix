@@ -2604,18 +2604,19 @@ a[href] {
   animation: startup-splash-in 0.55s cubic-bezier(0.2, 0.7, 0.1, 1) both;
 }
 .startup-splash__mark {
-  width: 64px;
-  height: 64px;
+  width: 104px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 14px 22px color-mix(in srgb, #0153e5 34%, transparent));
+  filter: drop-shadow(0 14px 22px color-mix(in srgb, #0f766e 22%, transparent));
   margin-bottom: 22px;
 }
 .startup-splash__mark img {
-  width: 64px;
-  height: 64px;
+  width: 104px;
+  height: 72px;
   display: block;
+  object-fit: contain;
 }
 .startup-splash__name {
   font-size: 27px;
@@ -14901,10 +14902,11 @@ a[href] {
   gap: 14px;
 }
 .onboarding__logo {
-  width: 36px;
-  height: 36px;
+  width: 72px;
+  height: 46px;
   align-self: flex-start;
   margin-bottom: 4px;
+  object-fit: contain;
 }
 .onboarding__title {
   font-size: 18px;
