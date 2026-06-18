@@ -678,7 +678,7 @@ func ClearPluginAuthenticationInSource(name string) (PluginEntry, bool, string, 
 }
 
 func pluginTOMLSourcePath(name string) string {
-	paths := append([]string{"reasonix.toml"}, userConfigCandidatePaths()...)
+	paths := append([]string{"quantara.toml", "reasonix.toml"}, userConfigCandidatePaths()...)
 	for _, path := range paths {
 		if strings.TrimSpace(path) == "" {
 			continue
@@ -715,7 +715,7 @@ func validatePlugin(e PluginEntry) error {
 
 // SaveTo writes the configuration to path as annotated TOML, atomically: it
 // writes a sibling temp file then renames, so a crash mid-write can't leave a
-// half-written reasonix.toml that fails to parse on next load. Parent directories
+// half-written TOML that fails to parse on next load. Parent directories
 // are created as needed.
 func (c *Config) SaveTo(path string) error {
 	return c.SaveToScope(path, renderScopeForPath(path))
@@ -820,26 +820,33 @@ func isUserConfigPath(path string) bool {
 }
 
 // Save writes the configuration back to the file it was loaded from
-// (SourcePath), or to ./reasonix.toml when none exists yet — the conventional
+// (SourcePath), or to ./quantara.toml when none exists yet — the conventional
 // project-local target a fresh GUI session would create.
 func (c *Config) Save() error {
 	path := SourcePath()
 	if path == "" {
-		path = "reasonix.toml"
+		path = "quantara.toml"
 	}
 	return c.SaveTo(path)
 }
 
-// SaveForRoot saves the config to root's reasonix.toml, falling back to the
-// user's global config when root has no existing reasonix.toml.
+// SaveForRoot saves the config to root's quantara.toml, falling back to the
+// user's global config when root has no existing project TOML.
 func (c *Config) SaveForRoot(root string) error {
 	root = resolveRoot(root)
-	projectTOML := "reasonix.toml"
+	projectTOML := "quantara.toml"
 	if root != "." {
-		projectTOML = filepath.Join(root, "reasonix.toml")
+		projectTOML = filepath.Join(root, "quantara.toml")
 	}
 	if _, err := os.Stat(projectTOML); err == nil {
 		return c.SaveTo(projectTOML)
+	}
+	legacyProjectTOML := "reasonix.toml"
+	if root != "." {
+		legacyProjectTOML = filepath.Join(root, "reasonix.toml")
+	}
+	if _, err := os.Stat(legacyProjectTOML); err == nil {
+		return c.SaveTo(legacyProjectTOML)
 	}
 	if uc := userConfigPath(); uc != "" {
 		if err := os.MkdirAll(filepath.Dir(uc), 0o755); err != nil {

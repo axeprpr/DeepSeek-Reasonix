@@ -4422,6 +4422,7 @@ function SandboxSection({ s, busy, apply }: SectionProps) {
 // swatches + accent are read from CSS variables at render time so they always
 // reflect the live token values for the currently-resolved light/dark mode.
 const THEME_STYLE_META: Record<ThemeStyle, { name: string; zh: DictKey; note: DictKey; desc: DictKey }> = {
+  graphite: { name: "Graphite", zh: "settings.style.graphite.zh", note: "settings.style.graphite.note", desc: "settings.style.graphite.desc" },
   slate: { name: "Slate", zh: "settings.style.slate.zh", note: "settings.style.slate.note", desc: "settings.style.slate.desc" },
 };
 

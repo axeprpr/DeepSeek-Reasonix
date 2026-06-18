@@ -388,7 +388,7 @@ Examples:
   reasonix bot doctor --json
 
 Configuration:
-  Edit reasonix.toml:
+  Edit quantara.toml:
     [bot]           enabled / model / max_steps
     [bot.allowlist]  enabled / qq_users / feishu_users / weixin_users
     [bot.qq]         enabled / app_id / app_secret_env

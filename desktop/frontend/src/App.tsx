@@ -2382,9 +2382,7 @@ export default function App() {
           {sidebarWorkbench ? (
             <>
               <div className="sidebar__head" aria-hidden={sidebarCollapsed}>
-                <div className="sidebar__brand sidebar__brand--workbench">
-                  <span className="sidebar__brand-wordmark">Quantara制造智能</span>
-                </div>
+                <div className="sidebar__brand sidebar__brand--workbench" />
               </div>
 
               <div className="sidebar__quick-actions">
@@ -2402,9 +2400,7 @@ export default function App() {
             </>
           ) : (
             <>
-              <div className="sidebar__brand" aria-hidden={sidebarCollapsed}>
-                <span className="sidebar__brand-wordmark">Quantara制造智能</span>
-              </div>
+              <div className="sidebar__brand" aria-hidden={sidebarCollapsed} />
 
               <button
                 className="sidebar__new"

@@ -497,7 +497,7 @@ func (t *installSourceTool) configPath(scope string) string {
 			return p
 		}
 	}
-	return filepath.Join(t.root, "reasonix.toml")
+	return filepath.Join(t.root, "quantara.toml")
 }
 
 func (t *installSourceTool) normalizeScope(scope string) (string, bool) {

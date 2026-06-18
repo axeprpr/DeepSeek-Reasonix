@@ -309,7 +309,7 @@ func mcpConfigLocation() string {
 	if path := config.UserConfigPath(); path != "" {
 		return path
 	}
-	return "reasonix.toml"
+	return "quantara.toml"
 }
 
 type mcpEditConfigLaunch struct {

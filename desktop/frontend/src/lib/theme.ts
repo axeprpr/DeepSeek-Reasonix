@@ -17,15 +17,15 @@ import {
 export type Theme = "auto" | "light" | "dark";
 export type ResolvedTheme = Exclude<Theme, "auto">;
 
-export const THEME_STYLES = ["slate"] as const;
+export const THEME_STYLES = ["slate", "graphite"] as const;
 
 export type ThemeStyle = (typeof THEME_STYLES)[number];
 
 // Old style identifiers map to the closest new direction so settings stored
 // from previous versions still resolve to a valid value.
 const LEGACY_STYLE_MAP: Record<string, ThemeStyle> = {
-  ember: "slate",
-  midnight: "slate",
+  ember: "graphite",
+  midnight: "graphite",
   sandstone: "slate",
   porcelain: "slate",
   linen: "slate",
