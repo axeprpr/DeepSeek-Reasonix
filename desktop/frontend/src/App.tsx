@@ -2833,7 +2833,6 @@ export default function App() {
             <StatusBar
               context={state.context}
               usage={state.usage}
-              balance={state.balance}
               jobs={state.jobs}
               running={state.running}
               collaborationMode={collaborationMode}
