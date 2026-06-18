@@ -173,39 +173,15 @@ func (c *Config) SetDesktopLanguage(lang string) error {
 // SetDesktopAppearance sets desktop-only theme preferences. It must not affect
 // CLI theme settings or provider-visible request data.
 func (c *Config) SetDesktopAppearance(theme, style string) error {
-	switch strings.ToLower(strings.TrimSpace(theme)) {
-	case "auto":
-		c.Desktop.Theme = "auto"
-	case "light":
-		c.Desktop.Theme = "light"
-	case "", "dark":
-		c.Desktop.Theme = "dark"
-	default:
-		return fmt.Errorf("desktop theme %q: must be auto|dark|light", theme)
-	}
-	if strings.TrimSpace(style) == "" {
-		c.Desktop.ThemeStyle = ""
-		return nil
-	}
-	normalized := normalizeThemeStyle(style)
-	if normalized == "" {
-		return fmt.Errorf("desktop theme style %q: must be graphite|aurora|slate|carbon|nocturne|amber", style)
-	}
-	c.Desktop.ThemeStyle = normalized
+	c.Desktop.Theme = "auto"
+	c.Desktop.ThemeStyle = "slate"
 	return nil
 }
 
 // SetDesktopLayoutStyle sets the desktop layout style. UI-only; it must not
 // affect CLI output or provider-visible request data.
 func (c *Config) SetDesktopLayoutStyle(style string) error {
-	switch strings.ToLower(strings.TrimSpace(style)) {
-	case "", "classic":
-		c.Desktop.LayoutStyle = "classic"
-	case "workbench", "workspace":
-		c.Desktop.LayoutStyle = "workbench"
-	default:
-		return fmt.Errorf("desktop layout style %q: must be classic|workbench", style)
-	}
+	c.Desktop.LayoutStyle = "classic"
 	return nil
 }
 
@@ -213,71 +189,35 @@ func (c *Config) SetDesktopLayoutStyle(style string) error {
 // intentionally UI-only and must not affect model prompts or provider-visible
 // request data.
 func (c *Config) SetDesktopCloseBehavior(mode string) error {
-	switch strings.ToLower(strings.TrimSpace(mode)) {
-	case "quit", "exit":
-		c.Desktop.CloseBehavior = "quit"
-	case "", "background", "hide":
-		c.Desktop.CloseBehavior = "background"
-	default:
-		return fmt.Errorf("close behavior %q: must be quit|background", mode)
-	}
+	c.Desktop.CloseBehavior = "quit"
 	return nil
 }
 
 // SetDesktopDisplayMode sets the transcript display mode. UI-only.
 func (c *Config) SetDesktopDisplayMode(mode string) error {
-	switch strings.ToLower(strings.TrimSpace(mode)) {
-	case "compact", "minimal":
-		c.Desktop.DisplayMode = "compact"
-	case "", "standard":
-		c.Desktop.DisplayMode = "standard"
-	default:
-		return fmt.Errorf("display mode %q: must be standard|compact", mode)
-	}
+	c.Desktop.DisplayMode = "standard"
 	return nil
 }
 
 // SetDesktopStatusBarStyle sets the desktop status bar metric label style.
 // UI-only; it must not affect CLI output or provider-visible request data.
 func (c *Config) SetDesktopStatusBarStyle(style string) error {
-	switch strings.ToLower(strings.TrimSpace(style)) {
-	case "icon", "icons":
-		c.Desktop.StatusBarStyle = "icon"
-	case "", "text", "label", "labels":
-		c.Desktop.StatusBarStyle = "text"
-	default:
-		return fmt.Errorf("status bar style %q: must be icon|text", style)
-	}
+	c.Desktop.StatusBarStyle = "text"
 	return nil
 }
 
 // SetDesktopStatusBarItems sets the ordered visible desktop status bar items.
 // UI-only; it must not affect CLI output or provider-visible request data.
 func (c *Config) SetDesktopStatusBarItems(items []string) error {
-	out := make([]string, 0, len(items))
-	seen := map[string]bool{}
-	for _, raw := range items {
-		id := strings.TrimSpace(raw)
-		if id == "" || seen[id] {
-			continue
-		}
-		if !knownDesktopStatusBarItems[id] {
-			return fmt.Errorf("status bar item %q: unknown item", id)
-		}
-		out = append(out, id)
-		seen[id] = true
-	}
-	if len(out) == 0 {
-		out = DefaultDesktopStatusBarItems()
-	}
-	c.Desktop.StatusBarItems = out
+	c.Desktop.StatusBarItems = DefaultDesktopStatusBarItems()
 	return nil
 }
 
 // SetDesktopCheckUpdates sets whether the desktop app checks for updates on
 // startup. Manual checks remain available in Settings regardless of this value.
 func (c *Config) SetDesktopCheckUpdates(enabled bool) error {
-	c.Desktop.CheckUpdates = &enabled
+	disabled := false
+	c.Desktop.CheckUpdates = &disabled
 	return nil
 }
 
@@ -308,7 +248,7 @@ func (c *Config) SetUICloseBehavior(mode string) error {
 // expanded by default. It is desktop-only and must not affect CLI output or
 // provider-visible request data.
 func (c *Config) SetExpandThinking(on bool) error {
-	c.Desktop.ExpandThinking = on
+	c.Desktop.ExpandThinking = false
 	return nil
 }
 

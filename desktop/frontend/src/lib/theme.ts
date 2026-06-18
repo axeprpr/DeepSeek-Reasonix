@@ -17,29 +17,22 @@ import {
 export type Theme = "auto" | "light" | "dark";
 export type ResolvedTheme = Exclude<Theme, "auto">;
 
-export const THEME_STYLES = [
-  "graphite",
-  "aurora",
-  "slate",
-  "carbon",
-  "nocturne",
-  "amber",
-] as const;
+export const THEME_STYLES = ["slate"] as const;
 
 export type ThemeStyle = (typeof THEME_STYLES)[number];
 
 // Old style identifiers map to the closest new direction so settings stored
 // from previous versions still resolve to a valid value.
 const LEGACY_STYLE_MAP: Record<string, ThemeStyle> = {
-  ember: "carbon",
-  midnight: "nocturne",
-  sandstone: "amber",
-  porcelain: "nocturne",
-  linen: "amber",
+  ember: "slate",
+  midnight: "slate",
+  sandstone: "slate",
+  porcelain: "slate",
+  linen: "slate",
   glacier: "slate",
 };
 
-const DEFAULT_THEME_STYLE: ThemeStyle = "graphite";
+const DEFAULT_THEME_STYLE: ThemeStyle = "slate";
 const DEFAULT_THEME: Theme = "auto";
 
 const THEME_KEY = "reasonix-theme";

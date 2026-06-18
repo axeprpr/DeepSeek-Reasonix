@@ -46,7 +46,6 @@ import { StatusBar } from "./components/StatusBar";
 import { HistoryPanel } from "./components/HistoryPanel";
 import { CommandPalette, type PaletteItem } from "./components/CommandPalette";
 import { SettingsPanel, type SettingsInitialFocus } from "./components/SettingsPanel";
-import { UpdateBanner } from "./components/UpdateBanner";
 import { ContextPanel } from "./components/ContextPanel";
 import { WorkspacePanel } from "./components/WorkspacePanel";
 import { Tooltip } from "./components/Tooltip";
@@ -112,8 +111,6 @@ import { applyTextSize, DEFAULT_TEXT_SIZE, getTextSize, nextTextSize } from "./l
 import { useViewportHeightVar, useWindowStatePersistence } from "./lib/windowState";
 import { availableWorkspacePanelWidth, resolveWorkspacePanelWidth, workspacePanelAriaMinWidth } from "./lib/workspaceLayout";
 import { useGlobalShortcut } from "./lib/keyboardShortcuts";
-import quantaraLogo from "./assets/quantara-logo.jpg";
-
 const SIDEBAR_COLLAPSED_KEY = "reasonix.sidebar.collapsed";
 const SIDEBAR_DEFAULT_WIDTH = 264;
 const SIDEBAR_MIN_WIDTH = 264;
@@ -861,7 +858,6 @@ export default function App() {
   const [settingsTarget, setSettingsTarget] = useState<SettingsTab | null>(null);
   const [settingsFocus, setSettingsFocus] = useState<SettingsInitialFocus | null>(null);
   const [desktopLayoutStyle, setDesktopLayoutStyle] = useState<DesktopLayoutStyle>("workbench");
-  const [startupUpdateChecksEnabled, setStartupUpdateChecksEnabled] = useState<boolean | null>(null);
   const [histView, setHistView] = useState<HistoryViewState | null>(null);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
@@ -1033,7 +1029,6 @@ export default function App() {
       applyTheme(nextTheme, nextStyle, { persist: false });
       setDesktopLayoutStyle(normalizeDesktopLayoutStyle(settings.desktopLayoutStyle));
       setLocalePref(normalizeLangPref(settings.desktopLanguage));
-      setStartupUpdateChecksEnabled(settings.checkUpdates !== false);
       setStatusBarStyle(settings.statusBarStyle === "text" ? "text" : "icon");
       setStatusBarItems(normalizeStatusBarItems(settings.statusBarItems));
     },
@@ -1062,7 +1057,6 @@ export default function App() {
     };
     void syncDesktopPreferences().catch((e) => {
       console.warn("desktop preferences sync failed", e);
-      setStartupUpdateChecksEnabled(true);
     });
     return () => {
       cancelled = true;
@@ -2389,7 +2383,7 @@ export default function App() {
             <>
               <div className="sidebar__head" aria-hidden={sidebarCollapsed}>
                 <div className="sidebar__brand sidebar__brand--workbench">
-                  <img src={quantaraLogo} alt="Quantara" className="sidebar__brand-logo sidebar__brand-logo--workbench" draggable={false} />
+                  <span className="sidebar__brand-wordmark">Quantara制造智能</span>
                 </div>
               </div>
 
@@ -2409,7 +2403,7 @@ export default function App() {
           ) : (
             <>
               <div className="sidebar__brand" aria-hidden={sidebarCollapsed}>
-                <img src={quantaraLogo} alt="Quantara" className="sidebar__brand-logo" draggable={false} />
+                <span className="sidebar__brand-wordmark">Quantara制造智能</span>
               </div>
 
               <button
@@ -2713,8 +2707,6 @@ export default function App() {
           {state.meta?.startupErr && (
             <div className="banner banner--error">{t("topbar.startupError", { msg: state.meta.startupErr })}</div>
           )}
-
-          <UpdateBanner enabled={startupUpdateChecksEnabled === true} />
 
           <main className="main">
             {sidebarImDetailConnection ? (

@@ -5931,6 +5931,8 @@ const (
 	onboardingDefaultURL   = "https://api.openai.com/v1"
 )
 
+const startupUpdateChecksEnabled = false
+
 // NativeConfirmRequest is the payload for ConfirmAction — a native OS confirmation
 // dialog that replaces web-style confirm() for destructive or important actions.
 type NativeConfirmRequest struct {

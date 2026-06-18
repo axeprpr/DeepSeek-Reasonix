@@ -342,7 +342,7 @@ func (a *App) Settings() SettingsView {
 	if err != nil {
 		return SettingsView{
 			Providers:         []ProviderView{},
-			OfficialProviders: officialProviderViews(map[string]bool{}, ""),
+			OfficialProviders: []ProviderView{},
 			ProviderKinds:     nonNil(provider.Kinds()),
 			Permissions: PermissionsView{
 				Mode:  "ask",
@@ -354,14 +354,14 @@ func (a *App) Settings() SettingsView {
 			Agent:              AgentView{PlannerMaxSteps: 12, ColdResumePrune: true, ReasoningLanguage: "auto"},
 			Bot:                botSettingsView(config.BotConfig{}),
 			AutoPlan:           "off",
-			DesktopLayoutStyle: "workbench",
+			DesktopLayoutStyle: "classic",
 			DesktopTheme:       "auto",
-			DesktopThemeStyle:  "graphite",
-			CloseBehavior:      "background",
+			DesktopThemeStyle:  "slate",
+			CloseBehavior:      "quit",
 			DisplayMode:        "standard",
 			StatusBarStyle:     "text",
 			StatusBarItems:     config.DefaultDesktopStatusBarItems(),
-			CheckUpdates:       true,
+			CheckUpdates:       false,
 			Telemetry:          true,
 			Metrics:            true,
 			ExpandThinking:     false,
@@ -428,10 +428,12 @@ func (a *App) Settings() SettingsView {
 	}
 	added := providerAccessSet(cfg.Desktop.ProviderAccess)
 	root := a.activeWorkspaceRoot()
-	v.OfficialProviders = officialProviderViewsForRoot(officialProviderAddedSet(cfg), cfg.DeepSeekOfficialPricingLanguage(), root)
 	for i := range cfg.Providers {
 		p := &cfg.Providers[i]
-		v.Providers = append(v.Providers, providerViewFromEntryForRoot(*p, isOfficialBuiltInProvider(*p), added[p.Name], root))
+		if isOfficialBuiltInProvider(*p) {
+			continue
+		}
+		v.Providers = append(v.Providers, providerViewFromEntryForRoot(*p, false, added[p.Name], root))
 	}
 	return v
 }

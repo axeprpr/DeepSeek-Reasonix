@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Activity, CircleDollarSign, CircleGauge, Database, Folder, GitBranch, Layers, Percent, RefreshCw, Wallet, Zap } from "lucide-react";
+import { Activity, CircleDollarSign, CircleGauge, Database, Folder, GitBranch, Layers, Percent, RefreshCw, Zap } from "lucide-react";
 import { Tooltip } from "./Tooltip";
 import { useI18n, type Translator } from "../lib/i18n";
 import { formatMoneyLocalized } from "../lib/money";
@@ -180,7 +180,6 @@ export function StatusBar({
   const avgPct = avgRate(usage);
   const jobsList = jobs ?? [];
   const turnCostLabel = formatMoneyLocalized(turnCost, currency, { locale });
-  const costLabel = formatMoneyLocalized(cost, currency, { locale });
   const displayWorkspacePath = (workspacePath || workspaceName || "").trim();
   const workspaceLabel = compactPath(displayWorkspacePath, workspaceName);
   const branchLabel = (gitBranch || "").trim();
@@ -188,7 +187,6 @@ export function StatusBar({
   const turnLabel = formatTurnCount(sessionTurns, t);
   const tokenLabel = formatTokenCount(sessionTokens);
   const turnTokenLabel = formatTokenCount(turnTokens);
-  const balanceLabel = balance?.available && balance.display ? balance.display : "-";
   const planMode = collaborationMode === "plan";
   const goalMode = collaborationMode === "goal";
   const metricLabelStyle = labelStyle === "text" ? "text" : "icon";
@@ -286,22 +284,6 @@ export function StatusBar({
           >
             {compactPct !== null ? `${compactPct}%` : "-"}
           </b>
-        </span>
-      </Tooltip>
-    ),
-    cost: (
-      <Tooltip label={t("status.spendTitle")} className="statusbar__metric statusbar__metric--cost">
-        <span className="stat statusbar__cost">
-          <MetricLabel style={metricLabelStyle} icon={<CircleDollarSign size={12} />} label={t("status.costLabel")} />
-          <b>{costLabel}</b>
-        </span>
-      </Tooltip>
-    ),
-    balance: (
-      <Tooltip label={t("status.balanceTitle")} className="statusbar__metric statusbar__metric--balance">
-        <span className="stat stat--balance statusbar__balance">
-          <MetricLabel style={metricLabelStyle} icon={<Wallet size={12} />} label={t("status.balanceLabel")} />
-          <b className={balanceLabel === "-" ? "stat__value--empty" : undefined}>{balanceLabel}</b>
         </span>
       </Tooltip>
     ),

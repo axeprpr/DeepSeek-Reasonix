@@ -145,23 +145,11 @@ func normalizeThemeStyle(style string) string {
 }
 
 func normalizeDesktopLayoutStyle(style string) string {
-	switch strings.ToLower(strings.TrimSpace(style)) {
-	case "classic":
-		return "classic"
-	case "workbench", "workspace":
-		return "workbench"
-	default:
-		return "workbench"
-	}
+	return "classic"
 }
 
 func normalizeCloseBehavior(mode string) string {
-	switch strings.ToLower(strings.TrimSpace(mode)) {
-	case "quit", "exit":
-		return "quit"
-	default:
-		return "background"
-	}
+	return "quit"
 }
 
 // DesktopLanguage normalizes the desktop UI language. Empty means auto-detect
@@ -226,27 +214,13 @@ func (c *Config) UICloseBehavior() string {
 // DesktopDisplayMode normalizes the transcript display mode. Default is
 // "standard" (flat rendering, no folding).
 func (c *Config) DesktopDisplayMode() string {
-	switch strings.ToLower(strings.TrimSpace(c.Desktop.DisplayMode)) {
-	case "standard":
-		return "standard"
-	case "compact", "minimal":
-		return "compact"
-	default:
-		return "standard"
-	}
+	return "standard"
 }
 
 // DesktopStatusBarStyle normalizes the desktop status bar metric label style.
 // Default is "text"; explicit "icon" preserves the user's compact choice.
 func (c *Config) DesktopStatusBarStyle() string {
-	switch strings.ToLower(strings.TrimSpace(c.Desktop.StatusBarStyle)) {
-	case "icon":
-		return "icon"
-	case "text":
-		return "text"
-	default:
-		return "text"
-	}
+	return "text"
 }
 
 var defaultDesktopStatusBarItems = []string{
@@ -259,8 +233,6 @@ var defaultDesktopStatusBarItems = []string{
 	"session_turns",
 	"context",
 	"compact",
-	"cost",
-	"balance",
 }
 
 var knownDesktopStatusBarItems = map[string]bool{
@@ -310,10 +282,7 @@ func normalizeDesktopStatusBarItems(items []string) []string {
 // DesktopCheckUpdates reports whether the desktop should check for updates on
 // startup. Missing configs default to true so existing users keep update notices.
 func (c *Config) DesktopCheckUpdates() bool {
-	if c == nil || c.Desktop.CheckUpdates == nil {
-		return true
-	}
-	return *c.Desktop.CheckUpdates
+	return false
 }
 
 // ColdResumePruneEnabled reports whether stale tool results are elided when a

@@ -10,8 +10,6 @@ export const STATUS_BAR_ITEM_IDS = [
   "session_turns",
   "context",
   "compact",
-  "cost",
-  "balance",
 ] as const;
 
 export type StatusBarItemId = typeof STATUS_BAR_ITEM_IDS[number];
