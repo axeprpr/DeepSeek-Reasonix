@@ -1,27 +1,28 @@
 {
-  "name": "reasonix",
+  "name": "quantara",
   "version": "0.0.0",
-  "description": "Cache-first DeepSeek coding agent for the terminal.",
+  "description": "Quantara manufacturing intelligence agent for the terminal.",
   "bin": {
-    "reasonix": "bin/reasonix.js"
+    "quantara": "bin/quantara.js"
   },
   "files": [
-    "bin/reasonix.js"
+    "bin/quantara.js"
   ],
   "engines": {
     "node": ">=18"
   },
   "license": "MIT",
-  "homepage": "https://github.com/esengine/DeepSeek-Reasonix#readme",
+  "homepage": "https://github.com/axeprpr/DeepSeek-Reasonix#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/esengine/DeepSeek-Reasonix.git"
+    "url": "git+https://github.com/axeprpr/DeepSeek-Reasonix.git"
   },
   "bugs": {
-    "url": "https://github.com/esengine/DeepSeek-Reasonix/issues"
+    "url": "https://github.com/axeprpr/DeepSeek-Reasonix/issues"
   },
   "keywords": [
-    "deepseek",
+    "quantara",
+    "manufacturing",
     "ai",
     "agent",
     "cli",
@@ -29,11 +30,11 @@
     "tui"
   ],
   "optionalDependencies": {
-    "@reasonix/cli-darwin-arm64": "0.0.0",
-    "@reasonix/cli-darwin-x64": "0.0.0",
-    "@reasonix/cli-linux-arm64": "0.0.0",
-    "@reasonix/cli-linux-x64": "0.0.0",
-    "@reasonix/cli-win32-arm64": "0.0.0",
-    "@reasonix/cli-win32-x64": "0.0.0"
+    "@quantara/cli-darwin-arm64": "0.0.0",
+    "@quantara/cli-darwin-x64": "0.0.0",
+    "@quantara/cli-linux-arm64": "0.0.0",
+    "@quantara/cli-linux-x64": "0.0.0",
+    "@quantara/cli-win32-arm64": "0.0.0",
+    "@quantara/cli-win32-x64": "0.0.0"
   }
 }

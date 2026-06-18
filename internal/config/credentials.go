@@ -20,7 +20,7 @@ const (
 	CredentialsStoreKeyring = "keyring"
 	CredentialsStoreFile    = "file"
 
-	credentialsKeyringService = "reasonix"
+	credentialsKeyringService = "quantara"
 )
 
 const (
@@ -67,7 +67,7 @@ func normalizeCredentialsStore(mode string) string {
 }
 
 func credentialsStoreMode() string {
-	if mode := strings.TrimSpace(os.Getenv("REASONIX_CREDENTIALS_STORE")); mode != "" {
+	if mode := strings.TrimSpace(os.Getenv("QUANTARA_CREDENTIALS_STORE")); mode != "" {
 		return normalizeCredentialsStore(mode)
 	}
 	var partial struct {
@@ -145,10 +145,10 @@ func loadCredentialStoreForRoot(root string) {
 	}
 	if mode == CredentialsStoreAuto || mode == CredentialsStoreFile {
 		if p := UserCredentialsPath(); p != "" {
-			loadDotEnvFileAs(p, CredentialSource{Kind: CredentialSourceCredentials, Path: p, Label: "Reasonix credentials"})
+			loadDotEnvFileAs(p, CredentialSource{Kind: CredentialSourceCredentials, Path: p, Label: "Quantara credentials"})
 		}
 		for _, p := range legacyCredentialsPaths() {
-			loadDotEnvFileAs(p, CredentialSource{Kind: CredentialSourceLegacy, Path: p, Label: "legacy Reasonix credentials"})
+			loadDotEnvFileAs(p, CredentialSource{Kind: CredentialSourceLegacy, Path: p, Label: "legacy Quantara credentials"})
 		}
 	}
 }

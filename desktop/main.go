@@ -47,7 +47,7 @@ var channel = "stable"
 // macOS release builds. Local/ad-hoc macOS builds keep the manual download path.
 var macSelfUpdate = "false"
 
-const disableWebview2GPUEnv = "REASONIX_DESKTOP_DISABLE_WEBVIEW2_GPU"
+const disableWebview2GPUEnv = "QUANTARA_DESKTOP_DISABLE_WEBVIEW2_GPU"
 
 func macSelfUpdateAllowed() bool {
 	switch strings.ToLower(strings.TrimSpace(macSelfUpdate)) {

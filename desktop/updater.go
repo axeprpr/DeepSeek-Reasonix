@@ -37,8 +37,8 @@ import (
 // fallback. The build channel picks the rolling pointer so a canary build polls
 // the canary line and a stable build polls latest; the two never cross.
 const (
-	r2Base         = "https://dl.reasonix.io"
-	ghReleasesBase = "https://github.com/esengine/reasonix/releases"
+	r2Base         = "https://dl.quantara.io"
+	ghReleasesBase = "https://github.com/axeprpr/DeepSeek-Reasonix/releases"
 	httpTimeout    = 15 * time.Second
 )
 

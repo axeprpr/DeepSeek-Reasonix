@@ -30,9 +30,9 @@ mkdirSync(STAGE, { recursive: true });
 
 const subPackages = [];
 for (const t of TARGETS) {
-  const name = `@reasonix/cli-${t.node}`;
+  const name = `@quantara/cli-${t.node}`;
   const dir = join(STAGE, `cli-${t.node}`);
-  const exe = t.goos === "windows" ? "reasonix.exe" : "reasonix";
+  const exe = t.goos === "windows" ? "quantara.exe" : "quantara";
   mkdirSync(join(dir, "bin"), { recursive: true });
 
   console.log(`build ${t.goos}/${t.goarch} -> ${name}`);
@@ -60,14 +60,14 @@ for (const t of TARGETS) {
       {
         name,
         version,
-        description: `reasonix prebuilt binary for ${t.node}.`,
+        description: `quantara prebuilt binary for ${t.node}.`,
         os: [t.goos === "windows" ? "win32" : t.goos],
         cpu: [t.goarch === "amd64" ? "x64" : "arm64"],
         files: ["bin/"],
         license: "MIT",
         repository: {
           type: "git",
-          url: "git+https://github.com/esengine/DeepSeek-Reasonix.git",
+          url: "git+https://github.com/axeprpr/DeepSeek-Reasonix.git",
         },
       },
       null,
@@ -77,7 +77,7 @@ for (const t of TARGETS) {
   subPackages.push({ name, dir });
 }
 
-const mainDir = join(STAGE, "reasonix");
+const mainDir = join(STAGE, "quantara");
 mkdirSync(mainDir, { recursive: true });
 cpSync(join(HERE, "reasonix", "bin"), join(mainDir, "bin"), { recursive: true });
 cpSync(join(ROOT, "README.md"), join(mainDir, "README.md"));
@@ -103,7 +103,7 @@ if (!publish) {
 // `-canary.` build is the opt-in tester channel (`canary`); everything else — the
 // 1.x line and rc prereleases — ships under `next`. Only a `--tag canary` publish
 // moves canary, so `next`/`latest` users never resolve a canary. Promote a 1.x
-// stable to default with a manual `npm dist-tag add reasonix@<ver> latest`.
+// stable to default with a manual `npm dist-tag add quantara@<ver> latest`.
 const distTag = version.includes("-canary.")
   ? "canary"
   : version.startsWith("0.") && !version.includes("-")
@@ -115,5 +115,5 @@ for (const sub of subPackages) {
   console.log(`publish ${sub.name}@${version} (${distTag})`);
   execFileSync("npm", publishArgs, { cwd: sub.dir, stdio: "inherit" });
 }
-console.log(`publish reasonix@${version} (${distTag})`);
+console.log(`publish quantara@${version} (${distTag})`);
 execFileSync("npm", publishArgs, { cwd: mainDir, stdio: "inherit" });

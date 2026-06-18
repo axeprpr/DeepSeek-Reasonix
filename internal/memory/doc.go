@@ -27,29 +27,29 @@ import (
 type Scope string
 
 const (
-	ScopeUser     Scope = "user"     // ~/.reasonix/REASONIX.md
-	ScopeAncestor Scope = "ancestor" // a REASONIX.md above the project root
-	ScopeProject  Scope = "project"  // ./REASONIX.md (committed, shared)
-	ScopeLocal    Scope = "local"    // ./REASONIX.local.md (personal, git-ignored)
+	ScopeUser     Scope = "user"     // ~/.quantara/QUANTARA.md
+	ScopeAncestor Scope = "ancestor" // a QUANTARA.md above the project root
+	ScopeProject  Scope = "project"  // ./QUANTARA.md (committed, shared)
+	ScopeLocal    Scope = "local"    // ./QUANTARA.local.md (personal, git-ignored)
 )
 
 // docNames are the recognized memory filenames at each level, in load order.
-// REASONIX.md is ours; AGENTS.md and CLAUDE.md are the cross-tool conventions.
+// QUANTARA.md is ours; AGENTS.md and CLAUDE.md are the cross-tool conventions.
 // When several distinct files exist in one directory, all load (each labeled with
 // its source path), so a repo already carrying an AGENTS.md / CLAUDE.md is picked
 // up without renaming. New docs are created as AGENTS.md (the universal
 // convention) — see defaultDocName / Set.DocPath.
-var docNames = []string{"REASONIX.md", "AGENTS.md", "CLAUDE.md"}
+var docNames = []string{"QUANTARA.md", "AGENTS.md", "CLAUDE.md"}
 
 // localNames are the personal, git-ignored overrides, highest precedence.
-var localNames = []string{"REASONIX.local.md", "AGENTS.local.md", "CLAUDE.local.md"}
+var localNames = []string{"QUANTARA.local.md", "AGENTS.local.md", "CLAUDE.local.md"}
 
 // defaultDocName / defaultLocalName are the filenames a fresh doc is created as
-// when a directory has none yet: AGENTS.md is the widely-shared convention, so a
-// new project's memory is portable to other agent tools out of the box.
+// when a directory has none yet: QUANTARA.md is the native convention for this
+// product line.
 const (
-	defaultDocName   = "AGENTS.md"
-	defaultLocalName = "AGENTS.local.md"
+	defaultDocName   = "QUANTARA.md"
+	defaultLocalName = "QUANTARA.local.md"
 )
 
 // maxImportDepth bounds "@path" import recursion (matches Claude Code's limit).

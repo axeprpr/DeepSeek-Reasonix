@@ -12,10 +12,10 @@ name: Release npm
 #
 # A manual workflow_dispatch can publish either an opt-in canary from the current
 # ref or an approved stable/next version when tag creation is restricted. Canary
-# publishes to the `canary` dist-tag (npm i reasonix@canary) and never moves
+# publishes to the `canary` dist-tag (npm i quantara@canary) and never moves
 # `next`/`latest`. build.mjs decides the dist-tag: 0.x stable is `latest`; a
 # `-canary.` build is `canary`; the 1.x line and rc prereleases are `next`. Promote
-# a 1.x stable to the default install with `npm dist-tag add reasonix@X.Y.Z latest`.
+# a 1.x stable to the default install with `npm dist-tag add quantara@X.Y.Z latest`.
 on:
   push:
     tags: ['npm-v*']
