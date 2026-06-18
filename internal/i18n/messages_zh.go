@@ -16,11 +16,11 @@ var Chinese = Messages{
 	NoKey:           "未设置 key",
 	Ready:           "已就绪",
 	GetStarted:      "开始使用",
-	StepScaffold:    "生成 reasonix.toml",
+	StepScaffold:    "生成 quantara.toml",
 	StepSetKey:      "设置 API key",
 
 	InitHint:       "项目记忆（AGENTS.md）在会话内由模型生成：运行 `reasonix`，然后 `/init` —— 模型会分析代码库并写入。配置请用 `reasonix setup`。",
-	StepSetKeyHint: "运行 `reasonix setup`，或 export DEEPSEEK_API_KEY=…",
+	StepSetKeyHint: "运行 `reasonix setup`，或 export OPENAI_API_KEY=…",
 	StepChatDesc:   "交互式会话",
 	StepRunDesc:    "执行单次任务",
 	HelpFooter:     "reasonix help · 查看全部命令",
@@ -79,7 +79,7 @@ var Chinese = Messages{
 
 	OutputStyleNone:    "没有可用的输出风格",
 	OutputStyleHeader:  "输出风格：",
-	OutputStyleHint:    "在 reasonix.toml 设置 agent.output_style 即可启用（下次会话生效）",
+	OutputStyleHint:    "在 quantara.toml 设置 agent.output_style 即可启用（下次会话生效）",
 	ThemeHeader:        "主题：",
 	ThemeHint:          "使用 /theme <auto|light|dark|style> 切换",
 	ThemeChangedFmt:    "已切换主题为 %s / %s",
@@ -151,7 +151,7 @@ var Chinese = Messages{
 	SkillPickerStatusNotDir:      "非目录",
 	SkillPickerStatusUnreadable:  "无权限",
 	SlashPromptEmpty:             "该 MCP prompt 没有返回可发送的内容",
-	SlashMCPNone:                 "没有配置 MCP 服务器 — 在 reasonix.toml 加一个 [[plugins]] 条目",
+	SlashMCPNone:                 "没有配置 MCP 服务器 — 在 quantara.toml 加一个 [[plugins]] 条目",
 	CtrlCQuitHint:                "再按一次 Ctrl+C 退出",
 	CompHintSlash:                "↑/↓ 移动 · Tab/Enter 选中 · Esc 关闭",
 	CompHintFile:                 "↑/↓ 移动 · Tab/Enter 进入文件夹或选中文件 · Esc 关闭",
@@ -210,7 +210,7 @@ var Chinese = Messages{
 	ArgEffortXHigh:  "超高推理",
 	ArgEffortMax:    "最高推理",
 	ArgThemeCurrent: "当前",
-	ArgLanguageAuto: "从 REASONIX_LANG / 系统 locale 自动检测",
+	ArgLanguageAuto: "从 QUANTARA_LANG、REASONIX_LANG 或系统 locale 自动检测",
 	ArgLanguageEn:   "English",
 	ArgLanguageZh:   "中文",
 
@@ -223,9 +223,9 @@ var Chinese = Messages{
 	ListSkillsHeaderFmt: "skills（%d 个）",
 	ListSkillsNone:      "暂无 skill — 调用内置的（如 /init），或用 install_skill 创建一个",
 	ListHooksHeaderFmt:  "hooks（生效 %d 个）",
-	ListHooksNone:       "无生效 hooks — 在 .reasonix/settings.json（项目，需信任后）或 ~/.reasonix/settings.json（全局）配置",
+	ListHooksNone:       "无生效 hooks — 在 .quantara/settings.json（项目，需信任后）或 ~/.quantara/settings.json（全局）配置",
 	ListMcpHeader:       "MCP 服务器",
-	ListMcpNone:         "未连接 MCP 服务器 — 在 reasonix.toml（[[plugins]]）或项目 .mcp.json 中添加",
+	ListMcpNone:         "未连接 MCP 服务器 — 在 quantara.toml（[[plugins]]）或项目 .mcp.json 中添加",
 
 	MemoryNone:             "还没有加载任何记忆 — 输入 “/remember 内容” 可快速记录，也可以在项目根目录创建 REASONIX.md",
 	MemoryLoaded:           "当前已加载的记忆：",
@@ -261,12 +261,12 @@ var Chinese = Messages{
 
 	SelectProvidersLabel:  "选择要启用的 provider",
 	EnterAPIKeysHeader:    "输入 API key（回车跳过、稍后再设）：",
-	MissingKeyIntro:       "reasonix.toml 已配置好 — 只差一个 API key 就可以开始。",
+	MissingKeyIntro:       "quantara.toml 已配置好 — 只差一个 API key 就可以开始。",
 	WroteFileFmt:          "已写入 %s",
 	SetupComplete:         "设置完成。",
 	SetupCancelled:        "设置已取消。",
 	TryHintFmt:            "试试: %s",
-	NextHint:              "下一步：设置 API key（运行 `reasonix setup` 或 export DEEPSEEK_API_KEY=...），然后运行 `reasonix run \"你的任务\"`。",
+	NextHint:              "下一步：设置 API key（运行 `reasonix setup` 或 export OPENAI_API_KEY=...），然后运行 `reasonix run \"你的任务\"`。",
 	ConfirmReconfigureFmt: "%s 已存在。重新配置并覆盖？",
 	KeepingExisting:       "保留原配置不变。",
 	NotOverwritingFmt:     "%s 已存在，不覆盖",
@@ -281,7 +281,7 @@ var Chinese = Messages{
 	NoModelsAvailableFmt:       "%s: 没有可用模型，跳过",
 	CustomFetchEmpty:           "/models 返回为空，回退到手动输入",
 	AnthropicFetchEmpty:        "/models 返回为空 — Anthropic 兼容服务通常不提供此端点，回退到手动输入",
-	SkipStaleCustomEntryFmt:    "跳过 reasonix.toml 里的旧 %q 条目（指向 %s）— 请手动从 [[providers]] 里删除",
+	SkipStaleCustomEntryFmt:    "跳过 quantara.toml 里的旧 %q 条目（指向 %s）— 请手动从 [[providers]] 里删除",
 	APIKeyAlreadySetFmt:        "复用已设置的 %s",
 	APIKeyResetPromptFmt:       "重新输入 %s？",
 
@@ -371,10 +371,10 @@ var Chinese = Messages{
   reasonix review [--base BRANCH] [--commit SHA] [--model NAME]  AI 代码审查（基于本地 diff）
   reasonix serve [--model NAME] [--addr HOST:PORT]      通过 HTTP+SSE 提供会话（浏览器客户端在 /）
   reasonix acp [--model NAME]                           通过 stdio 提供 Agent Client Protocol（也可用：reasonix --acp）
-  reasonix setup [path]                                 交互式配置向导；生成 reasonix.toml（及 .env）
+  reasonix setup [path]                                 交互式配置向导；生成 quantara.toml（及 .env）
   reasonix config auto-plan [off|on]                    配置自动计划模式
   reasonix config reasoning-language [auto|zh|en]        配置可见思考语言
-  reasonix mcp <add|remove|list|import>                 管理 reasonix.toml 里的 MCP 服务器
+  reasonix mcp <add|remove|list|import>                 管理 quantara.toml 里的 MCP 服务器
   reasonix init                                         查看如何生成项目记忆（AGENTS.md）
   reasonix doctor [--json]                              输出脱敏的本地诊断信息
   reasonix bot start|doctor|weixin-login                多渠道 IM bot 网关
@@ -390,8 +390,8 @@ var Chinese = Messages{
   echo "解释这段代码" | reasonix run
 
 配置：
-  优先级：flag > ./reasonix.toml > ~/.reasonix/config.toml > 内置默认值
-  密钥通过 api_key_env 从环境变量注入（如 DEEPSEEK_API_KEY）。
+  优先级：flag > ./quantara.toml > ~/.quantara/config.toml > 内置默认值
+  密钥通过 api_key_env 从环境变量注入（如 OPENAI_API_KEY）。
   运行 'reasonix setup' 生成配置；详见 docs/SPEC.md。
 `,
 }

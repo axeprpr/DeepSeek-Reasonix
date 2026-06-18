@@ -1,5 +1,5 @@
-// Package config loads Reasonix's runtime configuration from TOML. Resolution order:
-// flag > project ./reasonix.toml > user config.toml (in the OS user-config dir) > built-in defaults.
+// Package config loads Quantara's runtime configuration from TOML. Resolution order:
+// flag > project ./quantara.toml (fallback ./reasonix.toml) > user config.toml (in the OS user-config dir) > built-in defaults.
 // Secrets come from the environment via api_key_env and are never stored in
 // config files.
 package config
@@ -41,7 +41,7 @@ func SkillNameKey(name string) string {
 type Config struct {
 	ConfigVersion    int                 `toml:"config_version"`
 	DefaultModel     string              `toml:"default_model"`
-	Language         string              `toml:"language"` // ui/model language tag (e.g. "zh"); empty = auto-detect from $LANG / $REASONIX_LANG
+	Language         string              `toml:"language"` // ui/model language tag (e.g. "zh"); empty = auto-detect from $LANG / $QUANTARA_LANG
 	CredentialsStore string              `toml:"credentials_store"`
 	UI               UIConfig            `toml:"ui"`
 	Desktop          DesktopConfig       `toml:"desktop"`
@@ -1453,16 +1453,22 @@ func LoadForRoot(root string) (*Config, error) {
 	cfg := Default()
 	cfg.CredentialsStore = credentialsStoreMode()
 
-	projectTOML := "reasonix.toml"
+	projectTOML := "quantara.toml"
+	legacyProjectTOML := "reasonix.toml"
 	if root != "." {
-		projectTOML = filepath.Join(root, "reasonix.toml")
+		projectTOML = filepath.Join(root, "quantara.toml")
+		legacyProjectTOML = filepath.Join(root, "reasonix.toml")
 	}
 
 	var tomlSources []string
 	if uc := userConfigLoadPath(); uc != "" {
 		tomlSources = append(tomlSources, uc)
 	}
-	tomlSources = append(tomlSources, projectTOML)
+	if _, err := os.Stat(projectTOML); err == nil {
+		tomlSources = append(tomlSources, projectTOML)
+	} else {
+		tomlSources = append(tomlSources, legacyProjectTOML)
+	}
 	for _, path := range tomlSources {
 		if _, err := os.Stat(path); err == nil {
 			if err := migrateLegacyMCPTiersFile(path); err != nil {
@@ -2205,12 +2211,15 @@ func userConfigDir() string {
 }
 
 func reasonixHomeDir() string {
+	if dir := cleanEnvDir("QUANTARA_HOME"); dir != "" {
+		return dir
+	}
 	if dir := cleanEnvDir("REASONIX_HOME"); dir != "" {
 		return dir
 	}
 	if runtime.GOOS != "windows" {
 		if home, err := os.UserHomeDir(); err == nil && home != "" {
-			return filepath.Join(home, ".reasonix")
+			return filepath.Join(home, ".quantara")
 		}
 		return ""
 	}
@@ -2218,7 +2227,7 @@ func reasonixHomeDir() string {
 	if dir == "" {
 		return ""
 	}
-	return filepath.Join(dir, "reasonix")
+	return filepath.Join(dir, "quantara")
 }
 
 func userConfigLoadPath() string {
@@ -2296,6 +2305,9 @@ func legacyXDGConfigPaths() []string {
 }
 
 func userSupportDir() string {
+	if dir := cleanEnvDir("QUANTARA_STATE_HOME"); dir != "" {
+		return dir
+	}
 	if dir := cleanEnvDir("REASONIX_STATE_HOME"); dir != "" {
 		return dir
 	}
@@ -2315,6 +2327,9 @@ func legacyOSSupportDir() string {
 }
 
 func userCacheDir() string {
+	if dir := cleanEnvDir("QUANTARA_CACHE_HOME"); dir != "" {
+		return dir
+	}
 	if dir := cleanEnvDir("REASONIX_CACHE_HOME"); dir != "" {
 		return dir
 	}
@@ -2322,7 +2337,7 @@ func userCacheDir() string {
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(dir, "reasonix")
+	return filepath.Join(dir, "quantara")
 }
 
 func osUserConfigDir() string {
@@ -2373,11 +2388,11 @@ func samePath(a, b string) bool {
 
 // userConfigDisplayPath is userConfigPath collapsed to a ~-relative form for
 // comments rendered into the user's own config.toml, so Windows users see the
-// real location instead of a hardcoded ~/.reasonix path.
+// real location instead of a hardcoded ~/.quantara path.
 func userConfigDisplayPath() string {
 	p := userConfigPath()
 	if p == "" {
-		return "<os-config-dir>/reasonix/config.toml"
+		return "<os-config-dir>/quantara/config.toml"
 	}
 	if home, err := os.UserHomeDir(); err == nil && home != "" {
 		if rel, err := filepath.Rel(home, p); err == nil && !strings.HasPrefix(rel, "..") {
@@ -2387,9 +2402,9 @@ func userConfigDisplayPath() string {
 	return p
 }
 
-// UserConfigPath is the user-global config.toml. It lives under Reasonix home:
-// REASONIX_HOME/config.toml, then ~/.reasonix/config.toml on Unix-like systems,
-// or %AppData%/reasonix/config.toml on Windows. "" when the user config dir
+// UserConfigPath is the user-global config.toml. It lives under Quantara home:
+// QUANTARA_HOME/config.toml (fallback REASONIX_HOME), then ~/.quantara/config.toml on Unix-like systems,
+// or %AppData%/quantara/config.toml on Windows. "" when the user config dir
 // can't be resolved.
 func UserConfigPath() string { return userConfigPath() }
 
@@ -2421,12 +2436,12 @@ func LegacyUserConfigPaths() []string {
 	return out
 }
 
-// ReasonixHomeDir is the current Reasonix home directory. It honors
-// REASONIX_HOME, then uses ~/.reasonix on macOS/Linux or %APPDATA%/reasonix on
+// ReasonixHomeDir is the current Quantara home directory. It honors
+// QUANTARA_HOME (fallback REASONIX_HOME), then uses ~/.quantara on macOS/Linux or %APPDATA%/quantara on
 // Windows.
 func ReasonixHomeDir() string { return reasonixHomeDir() }
 
-// UserCredentialsPath is the reasonix-owned global secrets file under Reasonix
+// UserCredentialsPath is the quantara-owned global secrets file under Quantara
 // home. It holds KEY=value lines loaded into the environment by loadDotEnv. The
 // setup wizard writes API keys here, deliberately NOT named .env: keys never
 // land in a project's own .env (which can't be selectively gitignored), never
@@ -2582,12 +2597,17 @@ func SourcePath() string {
 // root, or "" if none. Equivalent to SourcePath() when root is ".".
 func SourcePathForRoot(root string) string {
 	root = resolveRoot(root)
-	projectTOML := "reasonix.toml"
+	projectTOML := "quantara.toml"
+	legacyProjectTOML := "reasonix.toml"
 	if root != "." {
-		projectTOML = filepath.Join(root, "reasonix.toml")
+		projectTOML = filepath.Join(root, "quantara.toml")
+		legacyProjectTOML = filepath.Join(root, "reasonix.toml")
 	}
 	if _, err := os.Stat(projectTOML); err == nil {
 		return projectTOML
+	}
+	if _, err := os.Stat(legacyProjectTOML); err == nil {
+		return legacyProjectTOML
 	}
 	if uc := userConfigLoadPath(); uc != "" {
 		if _, err := os.Stat(uc); err == nil {

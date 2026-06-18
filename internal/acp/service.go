@@ -247,8 +247,8 @@ func (s *service) initialize(_ context.Context, _ json.RawMessage) (any, error) 
 func reasonixSetupAuthMethod() AuthMethod {
 	return AuthMethod{
 		ID:          "reasonix-setup",
-		Name:        "Reasonix setup",
-		Description: "Configure Reasonix providers and credentials in a terminal",
+		Name:        "Quantara setup",
+		Description: "Configure Quantara providers and credentials in a terminal",
 		Type:        "terminal",
 		Args:        []string{"setup"},
 	}
