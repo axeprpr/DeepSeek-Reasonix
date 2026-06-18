@@ -688,15 +688,15 @@ func (a *App) saveProviderCredential(apiKeyEnv, value string) (string, error) {
 
 func providerCredentialShadowWarning(apiKeyEnv, value, root string, before config.CredentialResolution, beforeEnvSet bool, beforeEnvValue string) string {
 	if beforeEnvSet && beforeEnvValue != value {
-		return fmt.Sprintf("saved %s to Reasonix credentials, but an existing environment variable with the same name can override it after restart; update or remove that environment variable", apiKeyEnv)
+		return fmt.Sprintf("saved %s to Quantara credentials, but an existing environment variable with the same name can override it after restart; update or remove that environment variable", apiKeyEnv)
 	}
 	if before.Set && before.Source.Kind == config.CredentialSourceEnvironment && before.Value != value {
-		return fmt.Sprintf("saved %s to Reasonix credentials, but an existing environment variable with the same name can override it after restart; update or remove that environment variable", apiKeyEnv)
+		return fmt.Sprintf("saved %s to Quantara credentials, but an existing environment variable with the same name can override it after restart; update or remove that environment variable", apiKeyEnv)
 	}
 	current := config.ResolveCredentialForRoot(root, apiKeyEnv)
 	for _, source := range current.Shadowed {
 		if source.Kind == config.CredentialSourceProjectEnv {
-			return fmt.Sprintf("saved %s to Reasonix credentials, but this workspace's project .env also defines %s and can override it after restart; update or remove that project .env entry", apiKeyEnv, apiKeyEnv)
+			return fmt.Sprintf("saved %s to Quantara credentials, but this workspace's project .env also defines %s and can override it after restart; update or remove that project .env entry", apiKeyEnv, apiKeyEnv)
 		}
 	}
 	return ""
@@ -704,9 +704,9 @@ func providerCredentialShadowWarning(apiKeyEnv, value, root string, before confi
 
 func projectConfigPathForRoot(root string) string {
 	if strings.TrimSpace(root) == "" || root == "." {
-		return "reasonix.toml"
+		return "quantara.toml"
 	}
-	return filepath.Join(root, "reasonix.toml")
+	return filepath.Join(root, "quantara.toml")
 }
 
 func sameConfigPath(a, b string) bool {

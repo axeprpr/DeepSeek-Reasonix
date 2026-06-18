@@ -216,7 +216,7 @@ func defaultUpdateCacheBaseDir() (string, error) {
 	if err != nil {
 		base = os.TempDir()
 	}
-	return filepath.Join(base, "Reasonix", "updates"), nil
+	return filepath.Join(base, "Quantara", "updates"), nil
 }
 
 func updateCacheDir() (string, error) {
@@ -245,7 +245,7 @@ func assetFileName(asset update.Asset, version string) string {
 		}
 	}
 	clean := strings.NewReplacer("/", "-", "\\", "-", ":", "-", " ", "-").Replace(version)
-	return "Reasonix-" + clean + "-" + update.CurrentPlatform() + ".update"
+	return "Quantara-" + clean + "-" + update.CurrentPlatform() + ".update"
 }
 
 func writeAtomic(path string, data []byte, mode os.FileMode) error {
