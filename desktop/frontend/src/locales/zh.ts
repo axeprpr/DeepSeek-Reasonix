@@ -1560,7 +1560,7 @@ export const zh: Record<DictKey, string> = {
   "mock.askQ1Opt3Label": "另建分支保存改动",
   "mock.askQ1Opt3Desc": "先创建分支把本地改动保存起来，再拉取主分支",
   "mock.askQ2Header": "Quantara 构建",
-  "mock.askQ2Prompt": "对于 reasonix 二进制缺失的问题，你想怎么做？",
+  "mock.askQ2Prompt": "对于 Quantara 二进制缺失的问题，你想怎么做？",
   "mock.askQ2Opt1Label": "先查文档",
   "mock.askQ2Opt1Desc": "查看 README / 构建文档来确定正确的构建命令",
   "mock.askQ2Opt2Label": "看构建配置",

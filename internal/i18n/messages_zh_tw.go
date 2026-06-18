@@ -8,7 +8,7 @@ var ChineseTraditional = Messages{
 	WelcomeTitleFmt: "歡迎使用 %s",
 	NoConfigYet:     "還沒有設定 — 現在來設定一下吧。",
 	StartingChatFmt: "正在啟動 %s…",
-	SetKeyHint:      "設定好 API key 後執行 `reasonix`。",
+	SetKeyHint:      "設定好 API key 後執行 `quantara`。",
 	ConfigLabel:     "設定",
 	ModelsLabel:     "模型",
 	ConfigNotFound:  "未找到 — 使用內建預設值",
@@ -19,15 +19,15 @@ var ChineseTraditional = Messages{
 	StepScaffold:    "生成 quantara.toml",
 	StepSetKey:      "設定 API key",
 
-	InitHint:       "專案記憶（AGENTS.md）在會話內由模型生成：執行 `reasonix`，然後 `/init` —— 模型會分析程式碼庫並寫入。設定請用 `reasonix setup`。",
-	StepSetKeyHint: "執行 `reasonix setup`，或 export OPENAI_API_KEY=…",
+	InitHint:       "專案記憶（AGENTS.md）在會話內由模型生成：執行 `quantara`，然後 `/init` —— 模型會分析程式碼庫並寫入。設定請用 `quantara setup`。",
+	StepSetKeyHint: "執行 `quantara setup`，或 export OPENAI_API_KEY=…",
 	StepChatDesc:   "互動式會話",
 	StepRunDesc:    "執行單次任務",
-	HelpFooter:     "reasonix help · 檢視全部命令",
+	HelpFooter:     "quantara help · 檢視全部命令",
 
 	ChatTip:           "對話上下文將跨輪保留。輸入 'exit' 或按 Ctrl-D 退出。",
 	TurnCancelled:     "已取消 — 回到提示符",
-	NoSessionToResume: "沒有可恢復的會話 — 用 `reasonix` 開一個新的",
+	NoSessionToResume: "沒有可恢復的會話 — 用 `quantara` 開一個新的",
 	ResumeRequiresTTY: "--resume 需要互動式終端；用 --continue 直接恢復最近一次",
 	PickSessionLabel:  "恢復哪個會話？",
 
@@ -295,14 +295,14 @@ var ChineseTraditional = Messages{
 	AnthropicSelectModelsLabel:     "選擇要啟用的 %s 模型",
 
 	UnknownCommandFmt:         "未知命令 %q",
-	UsageRunHint:              "用法：reasonix run [--model NAME] <task>",
+	UsageRunHint:              "用法：quantara run [--model NAME] <task>",
 	ErrorPrefix:               "錯誤：",
 	ReconfigureOnUnknownModel: "設定的模型已不可用 —— 重新執行引導設定。",
 	WriteConfigErr:            "寫入設定失敗：",
 	WriteEnvErr:               "寫入 .env 失敗：",
 
 	ProviderErrBadRequest:          "請求格式錯誤 (HTTP 400)：請求體被拒絕，通常是程式缺陷。若持續出現請回報。",
-	ProviderErrAuth:                "認證失敗 (HTTP 401)：API key 缺失、錯誤或已過期。請檢查 .env 中的金鑰，或執行 `reasonix setup`。",
+	ProviderErrAuth:                "認證失敗 (HTTP 401)：API key 缺失、錯誤或已過期。請檢查 .env 中的金鑰，或執行 `quantara setup`。",
 	ProviderErrInsufficientBalance: "餘額不足 (HTTP 402)：帳戶餘額不足，請前往儲值後重試。",
 	ProviderErrUnprocessable:       "參數錯誤 (HTTP 422)：某個請求參數被拒絕，通常是程式缺陷。若持續出現請回報。",
 	ProviderErrRateLimited:         "請求速率達到上限 (HTTP 429)：請求過於頻繁 (TPM/RPM)。已退避重試，請放慢速率或稍後再試。",
@@ -312,36 +312,36 @@ var ChineseTraditional = Messages{
 	SelectOneHint:  "(↑/↓ · Enter · q 取消)",
 	SelectManyHint: "(↑/↓ · Space · Enter · q)",
 
-	UsageBody: `reasonix — 由設定和插件驅動的 coding agent（多模型）
+	UsageBody: `quantara — 由設定和插件驅動的 coding agent（多模型）
 
 用法：
-  reasonix [--model NAME] [-c|--continue] [--resume] [--yolo] [--dir PATH]   互動式會話（多輪；-c 恢復最近一次，--resume 選擇一個）
-  reasonix run  [--model NAME] [--max-steps N] [-c|--continue] [--resume PATH] <task>   執行單次任務後退出
-  reasonix review [--base BRANCH] [--commit SHA] [--model NAME]  AI 程式碼審查（基於本機 diff）
-  reasonix serve [--model NAME] [--addr HOST:PORT]      透過 HTTP+SSE 提供會話（瀏覽器客戶端在 /）
-  reasonix acp [--model NAME]                           透過 stdio 提供 Agent Client Protocol（也可用：reasonix --acp）
-  reasonix setup [path]                                 互動式設定精靈；生成 quantara.toml（及 .env）
-  reasonix config auto-plan [off|on]                    設定自動計畫模式
-  reasonix config reasoning-language [auto|zh|en]        設定可見思考語言
-  reasonix mcp <add|remove|list|import>                 管理 quantara.toml 裡的 MCP 伺服器
-  reasonix init                                         查看如何產生專案記憶（AGENTS.md）
-  reasonix doctor [--json]                              輸出脫敏的本機診斷資訊
-  reasonix bot start|doctor|weixin-login                多管道 IM bot 閘道
-  reasonix upgrade [--check] [--force]                   自更新至最新版本（也可用：reasonix update）
-  reasonix version
-  reasonix help
+  quantara [--model NAME] [-c|--continue] [--resume] [--yolo] [--dir PATH]   互動式會話（多輪；-c 恢復最近一次，--resume 選擇一個）
+  quantara run  [--model NAME] [--max-steps N] [-c|--continue] [--resume PATH] <task>   執行單次任務後退出
+  quantara review [--base BRANCH] [--commit SHA] [--model NAME]  AI 程式碼審查（基於本機 diff）
+  quantara serve [--model NAME] [--addr HOST:PORT]      透過 HTTP+SSE 提供會話（瀏覽器客戶端在 /）
+  quantara acp [--model NAME]                           透過 stdio 提供 Agent Client Protocol（也可用：quantara --acp）
+  quantara setup [path]                                 互動式設定精靈；生成 quantara.toml（及 .env）
+  quantara config auto-plan [off|on]                    設定自動計畫模式
+  quantara config reasoning-language [auto|zh|en]        設定可見思考語言
+  quantara mcp <add|remove|list|import>                 管理 quantara.toml 裡的 MCP 伺服器
+  quantara init                                         查看如何產生專案記憶（AGENTS.md）
+  quantara doctor [--json]                              輸出脫敏的本機診斷資訊
+  quantara bot start|doctor|weixin-login                多管道 IM bot 閘道
+  quantara upgrade [--check] [--force]                   自更新至最新版本（也可用：quantara update）
+  quantara version
+  quantara help
 
 範例：
-  reasonix
-  reasonix --continue
-  reasonix run "把 main.go 裡的 TODO 實現掉"
-  reasonix run --model mimo-pro "給這個函式補單元測試"
-  echo "解釋這段程式碼" | reasonix run
+  quantara
+  quantara --continue
+  quantara run "把 main.go 裡的 TODO 實現掉"
+  quantara run --model mimo-pro "給這個函式補單元測試"
+  echo "解釋這段程式碼" | quantara run
 
 設定：
   優先順序：flag > ./quantara.toml > ~/.quantara/config.toml > 內建預設值
   金鑰透過 api_key_env 從環境變數注入（如 OPENAI_API_KEY）。
-  執行 'reasonix setup' 生成設定；詳見 docs/SPEC.md。
+  執行 'quantara setup' 生成設定；詳見 docs/SPEC.md。
 `,
 	RenameUsage:                "用法：/rename <新名稱>  或  /rename <序號> <新名稱>",
 	RenameNoSession:            "當前沒有活躍會話可重新命名",
@@ -361,7 +361,7 @@ var ChineseTraditional = Messages{
 	GoalCurrentFmt:             "目標：%s",
 	GoalSetFmt:                 "目標已設定 → %s",
 	GoalCleared:                "目標已清除",
-	ProviderErrAuthRejected:    "認證失敗 (HTTP 401)：服務端拒絕了你的 API key。可能是 key 錯誤或已過期，也可能是服務端出現瞬時鑑權/額度問題——已退避重試仍失敗。請稍後再試，或檢查 .env 中的金鑰 / 執行 `reasonix setup`。",
+	ProviderErrAuthRejected:    "認證失敗 (HTTP 401)：服務端拒絕了你的 API key。可能是 key 錯誤或已過期，也可能是服務端出現瞬時鑑權/額度問題——已退避重試仍失敗。請稍後再試，或檢查 .env 中的金鑰 / 執行 `quantara setup`。",
 	SelectMoreAboveFmt:         "  ↑ 上方還有 %d 個",
 	SelectMoreBelowFmt:         "  ↓ 下方還有 %d 個",
 	SelectSearchHint:           "/ 搜尋 · 輸入關鍵詞過濾 · Esc 取消搜尋",

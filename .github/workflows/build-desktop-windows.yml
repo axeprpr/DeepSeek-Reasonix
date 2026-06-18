@@ -1,4 +1,4 @@
-name: Build desktop (Windows)
+name: Build Quantara desktop (Windows)
 
 on:
   workflow_dispatch:
@@ -48,6 +48,6 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: reasonix-desktop-windows-amd64
+          name: quantara-desktop-windows-amd64
           path: dist/*
           if-no-files-found: error

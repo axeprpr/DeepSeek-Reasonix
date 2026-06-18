@@ -7,7 +7,7 @@ var English = Messages{
 	WelcomeTitleFmt: "Welcome to %s",
 	NoConfigYet:     "No configuration found yet — let's set it up.",
 	StartingChatFmt: "Starting %s…",
-	SetKeyHint:      "Set your API key, then run `reasonix`.",
+	SetKeyHint:      "Set your API key, then run `quantara`.",
 	ConfigLabel:     "config",
 	ModelsLabel:     "models",
 	ConfigNotFound:  "not found — using built-in defaults",
@@ -18,15 +18,15 @@ var English = Messages{
 	StepScaffold:    "scaffold quantara.toml",
 	StepSetKey:      "set API key",
 
-	InitHint:       "Project memory (AGENTS.md) is generated in-session: run `reasonix`, then `/init` — the model analyzes the codebase and writes it. For configuration, use `reasonix setup`.",
-	StepSetKeyHint: "run `reasonix setup`, or export OPENAI_API_KEY=…",
+	InitHint:       "Project memory (AGENTS.md) is generated in-session: run `quantara`, then `/init` — the model analyzes the codebase and writes it. For configuration, use `quantara setup`.",
+	StepSetKeyHint: "run `quantara setup`, or export OPENAI_API_KEY=…",
 	StepChatDesc:   "interactive session",
 	StepRunDesc:    "one-shot task",
-	HelpFooter:     "reasonix help · all commands",
+	HelpFooter:     "quantara help · all commands",
 
 	ChatTip:           "Context is kept across turns. Type 'exit' or Ctrl-D to quit.",
 	TurnCancelled:     "cancelled — back to prompt",
-	NoSessionToResume: "no saved session to resume — start a new one with `reasonix`",
+	NoSessionToResume: "no saved session to resume — start a new one with `quantara`",
 	ResumeRequiresTTY: "--resume needs an interactive terminal; pass --continue for the most recent session",
 	PickSessionLabel:  "Resume which session?",
 
@@ -313,15 +313,15 @@ var English = Messages{
 	AnthropicSelectModelsLabel:     "Select models to enable for %s",
 
 	UnknownCommandFmt:         "unknown command %q",
-	UsageRunHint:              "usage: reasonix run [--model NAME] <task>",
+	UsageRunHint:              "usage: quantara run [--model NAME] <task>",
 	ErrorPrefix:               "error:",
 	ReconfigureOnUnknownModel: "Configured model is no longer available — re-running setup.",
 	WriteConfigErr:            "write config:",
 	WriteEnvErr:               "write .env:",
 
 	ProviderErrBadRequest:          "Malformed request (HTTP 400): the request body was rejected. This is likely a bug — please report it if it persists.",
-	ProviderErrAuth:                "Authentication failed (HTTP 401): your API key is missing or unset. Add it to .env or run `reasonix setup`.",
-	ProviderErrAuthRejected:        "Authentication failed (HTTP 401): the server rejected your API key. It may be wrong or expired, or the provider hit a transient auth/quota issue — retried with backoff and still failed. Try again shortly, or check the key in .env / run `reasonix setup`.",
+	ProviderErrAuth:                "Authentication failed (HTTP 401): your API key is missing or unset. Add it to .env or run `quantara setup`.",
+	ProviderErrAuthRejected:        "Authentication failed (HTTP 401): the server rejected your API key. It may be wrong or expired, or the provider hit a transient auth/quota issue — retried with backoff and still failed. Try again shortly, or check the key in .env / run `quantara setup`.",
 	ProviderErrInsufficientBalance: "Insufficient balance (HTTP 402): your account is out of credit. Top up your account, then retry.",
 	ProviderErrUnprocessable:       "Invalid parameters (HTTP 422): a request parameter was rejected. This is likely a bug — please report it if it persists.",
 	ProviderErrRateLimited:         "Rate limit reached (HTTP 429): too many requests (TPM/RPM). Retried with backoff — slow down or try again shortly.",
@@ -362,35 +362,35 @@ var English = Messages{
 	UpgradeApplyFailed:         "failed to apply update: %v",
 	UpgradeSuccessFmt:          "Updated %s → %s",
 
-	UsageBody: `reasonix — a config- and plugin-driven coding agent (multi-model)
+	UsageBody: `quantara — a config- and plugin-driven coding agent (multi-model)
 
 Usage:
-  reasonix [--model NAME] [-c|--continue] [--resume] [--yolo] [--dir PATH]   interactive session (multi-turn; -c resumes the latest, --resume picks one)
-  reasonix run  [--model NAME] [--max-steps N] [-c|--continue] [--resume PATH] <task>   run one task and exit
-  reasonix review [--base BRANCH] [--commit SHA] [--model NAME]  AI-powered code review on local diffs
-  reasonix serve [--model NAME] [--addr HOST:PORT]      serve the session over HTTP+SSE (browser client at /)
-  reasonix acp [--model NAME]                           serve Agent Client Protocol over stdio (also: reasonix --acp)
-  reasonix setup [path]                                 interactive config wizard; writes quantara.toml (+ .env)
-  reasonix config auto-plan [off|on]                    configure automatic plan mode
-  reasonix config reasoning-language [auto|zh|en]        configure visible reasoning language
-  reasonix mcp <add|remove|list|import>                 manage MCP servers in quantara.toml
-  reasonix init                                         show how to generate project memory (AGENTS.md)
-  reasonix doctor [--json]                              print redacted local diagnostics
-  reasonix bot start|doctor|weixin-login                multi-channel IM bot gateway
-  reasonix upgrade [--check] [--force]                   self-update to the latest release (also: reasonix update)
-  reasonix version
-  reasonix help
+  quantara [--model NAME] [-c|--continue] [--resume] [--yolo] [--dir PATH]   interactive session (multi-turn; -c resumes the latest, --resume picks one)
+  quantara run  [--model NAME] [--max-steps N] [-c|--continue] [--resume PATH] <task>   run one task and exit
+  quantara review [--base BRANCH] [--commit SHA] [--model NAME]  AI-powered code review on local diffs
+  quantara serve [--model NAME] [--addr HOST:PORT]      serve the session over HTTP+SSE (browser client at /)
+  quantara acp [--model NAME]                           serve Agent Client Protocol over stdio (also: quantara --acp)
+  quantara setup [path]                                 interactive config wizard; writes quantara.toml (+ .env)
+  quantara config auto-plan [off|on]                    configure automatic plan mode
+  quantara config reasoning-language [auto|zh|en]        configure visible reasoning language
+  quantara mcp <add|remove|list|import>                 manage MCP servers in quantara.toml
+  quantara init                                         show how to generate project memory (AGENTS.md)
+  quantara doctor [--json]                              print redacted local diagnostics
+  quantara bot start|doctor|weixin-login                multi-channel IM bot gateway
+  quantara upgrade [--check] [--force]                   self-update to the latest release (also: quantara update)
+  quantara version
+  quantara help
 
 Examples:
-  reasonix
-  reasonix --continue
-  reasonix run "implement the TODOs in main.go"
-  reasonix run --model mimo-pro "add unit tests for this function"
-  echo "explain this code" | reasonix run
+  quantara
+  quantara --continue
+  quantara run "implement the TODOs in main.go"
+  quantara run --model mimo-pro "add unit tests for this function"
+  echo "explain this code" | quantara run
 
 Configuration:
   Resolution: flag > ./quantara.toml > ~/.quantara/config.toml > built-in defaults
   Secrets come from the environment via api_key_env (e.g. OPENAI_API_KEY).
-  Run 'reasonix setup' to scaffold a config; see docs/SPEC.md.
+  Run 'quantara setup' to scaffold a config; see docs/SPEC.md.
 `,
 }

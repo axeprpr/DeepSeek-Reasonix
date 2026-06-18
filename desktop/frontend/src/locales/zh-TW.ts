@@ -977,7 +977,7 @@ export const zhTW: Record<DictKey, string> = {
   "mock.askQ1Opt3Label": "另建分支儲存變更",
   "mock.askQ1Opt3Desc": "先建立分支把本地變更儲存起來，再拉取主分支",
   "mock.askQ2Header": "Quantara 建構",
-  "mock.askQ2Prompt": "對於 reasonix 二進位檔案缺失的問題，你想怎麼做？",
+  "mock.askQ2Prompt": "對於 Quantara 二進位檔案缺失的問題，你想怎麼做？",
   "mock.askQ2Opt1Label": "先查文件",
   "mock.askQ2Opt1Desc": "查看 README / 建構文件來確定正確的建構命令",
   "mock.askQ2Opt2Label": "看建構設定",

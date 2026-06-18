@@ -1,6 +1,6 @@
-# Reasonix Desktop (Wails shell)
+# Quantara Desktop (Wails shell)
 
-A native desktop window around the Reasonix Go kernel. The same
+A native desktop window around the Quantara Go kernel. The same
 transport-agnostic `control.Controller` that backs the chat TUI and the HTTP/SSE
 server is bound **directly** to a React webview — Go methods in, typed events
 out, no HTTP hop.
@@ -78,7 +78,7 @@ component code and the CSS positioning contract:
 
 ```sh
 cd desktop
-wails build          # → build/bin/Reasonix(.app/.exe)
+wails build          # → build/bin/Quantara(.app/.exe)
 ```
 
 **Linux on WebKitGTK 4.1 only** (Fedora 40+, Ubuntu 24.04+, Arch — no
@@ -103,7 +103,7 @@ pipeline and just uploads the packaged desktop build as an Actions artifact.
 
 - Open **Actions -> Build desktop (Windows)**
 - Click **Run workflow**
-- Download the artifact named `reasonix-desktop-windows-amd64`
+- Download the artifact named `quantara-desktop-windows-amd64`
 
 This is the simplest path for fork validation. The full `release-desktop.yml`
 workflow is still intended for tagged upstream-style releases.
@@ -138,11 +138,11 @@ has a manual check. Self-update behavior by platform:
 There are no Apple/Windows code-signing certificates yet, so a downloaded build
 trips the OS gatekeepers on first run:
 
-- **macOS** — open `Reasonix-darwin-universal.dmg` and drag Reasonix into
+- **macOS** — open `Quantara-darwin-universal.dmg` and drag Quantara into
   Applications. Gatekeeper may then report the app "is damaged" or is from an
   unidentified developer; clear the quarantine attribute and open it:
   ```sh
-  xattr -dr com.apple.quarantine /Applications/Reasonix.app
+  xattr -dr com.apple.quarantine /Applications/Quantara.app
   ```
 - **Windows** — SmartScreen shows "Windows protected your PC". Click *More info →
   Run anyway*.
@@ -157,7 +157,7 @@ signature sits next to each artifact in the release; verify with the
 [minisign](https://jedisct1.github.io/minisign/) CLI:
 
 ```sh
-minisign -Vm Reasonix-darwin-arm64.zip \
+minisign -Vm Quantara-darwin-arm64.zip \
   -P RWSw66n0RsoSr6Zhh6qt5YO95YkpCayTOCMFVDNUQSjJYwxoYngNVBSq
 ```
 

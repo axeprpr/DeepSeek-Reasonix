@@ -35,8 +35,8 @@ const LEGACY_STYLE_MAP: Record<string, ThemeStyle> = {
 const DEFAULT_THEME_STYLE: ThemeStyle = "slate";
 const DEFAULT_THEME: Theme = "auto";
 
-const THEME_KEY = "reasonix-theme";
-const STYLE_KEY = "reasonix-theme-style";
+const THEME_KEY = "quantara-theme";
+const STYLE_KEY = "quantara-theme-style";
 const AUTO_THEME_MEDIA_QUERY = "(prefers-color-scheme: light)";
 let currentTheme: Theme = DEFAULT_THEME;
 let currentThemeStyle: ThemeStyle = DEFAULT_THEME_STYLE;

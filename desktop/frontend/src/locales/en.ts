@@ -1558,7 +1558,7 @@ export const en = {
   "mock.askQ1Opt3Label": "Create branch to save changes",
   "mock.askQ1Opt3Desc": "Create a branch to save local changes first, then pull main branch",
   "mock.askQ2Header": "Quantara build",
-  "mock.askQ2Prompt": "What do you want to do about the missing reasonix binary?",
+  "mock.askQ2Prompt": "What do you want to do about the missing Quantara binary?",
   "mock.askQ2Opt1Label": "Check docs first",
   "mock.askQ2Opt1Desc": "Read README / build docs to determine the correct build command",
   "mock.askQ2Opt2Label": "Check build config",

@@ -111,7 +111,7 @@ import { applyTextSize, DEFAULT_TEXT_SIZE, getTextSize, nextTextSize } from "./l
 import { useViewportHeightVar, useWindowStatePersistence } from "./lib/windowState";
 import { availableWorkspacePanelWidth, resolveWorkspacePanelWidth, workspacePanelAriaMinWidth } from "./lib/workspaceLayout";
 import { useGlobalShortcut } from "./lib/keyboardShortcuts";
-const SIDEBAR_COLLAPSED_KEY = "reasonix.sidebar.collapsed";
+const SIDEBAR_COLLAPSED_KEY = "quantara.sidebar.collapsed";
 const SIDEBAR_DEFAULT_WIDTH = 264;
 const SIDEBAR_MIN_WIDTH = 264;
 const SIDEBAR_MAX_WIDTH = 300;
