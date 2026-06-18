@@ -133,7 +133,6 @@ function workspaceTooltip(t: Translator, displayPath: string, workspacePath?: st
 export function StatusBar({
   context,
   usage,
-  balance,
   jobs,
   running,
   collaborationMode,
@@ -142,7 +141,6 @@ export function StatusBar({
   sessionTokens,
   turnTokens,
   turnCost,
-  cost,
   currency,
   modelLabel,
   labelStyle = "text",
@@ -153,7 +151,6 @@ export function StatusBar({
 }: {
   context: ContextInfo;
   usage?: WireUsage;
-  balance?: BalanceInfo;
   jobs?: JobView[];
   running: boolean;
   collaborationMode: CollaborationMode;
@@ -162,7 +159,6 @@ export function StatusBar({
   sessionTokens?: number;
   turnTokens?: number;
   turnCost?: number;
-  cost?: number;
   currency?: string;
   modelLabel?: string;
   labelStyle?: StatusBarLabelStyle;
